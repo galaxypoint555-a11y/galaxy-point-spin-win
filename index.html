@@ -161,7 +161,7 @@ h2{margin:0 0 10px}
 <main id="main">
 <section class="card">
   <h2>🔓 Unlock Your Spin</h2>
-  <div class="sub">Complete all three social actions and wait for the 15-second unlock timer. Until then, the wheel stays blurred and locked.</div>
+  <div class="sub">Complete all three social actions and wait for the 30-second unlock timer. Until then, the wheel stays blurred and locked.</div>
 
   <div class="steps">
     <div class="step">
@@ -187,9 +187,9 @@ h2{margin:0 0 10px}
   </div>
 
   <div class="lockmsg" id="lockmsg">🔒 Spin locked — complete the steps</div>
-  <div class="timer" id="timer">15</div>
+  <div class="timer" id="timer">30</div>
   <div class="progress"><div class="bar" id="bar"></div></div>
-  <div class="status" id="status">15-second timer is running. The spin unlocks only after all steps are completed.</div>
+  <div class="status" id="status">30-second timer is running. The spin unlocks only after all steps are completed.</div>
 </section>
 
 <section class="card">
@@ -261,13 +261,13 @@ function markStep(i){
 function allStepsDone(){return completed.every(Boolean)}
 
 function updateUnlock(){
-  if(elapsed>=15 && allStepsDone()){
+  if(elapsed>=30 && allStepsDone()){
     area.classList.remove('locked');
     spin.disabled=false;
     spin.textContent='🎁 SPIN NOW';
     lockmsg.textContent='✅ Spin Unlocked! Good luck!';
     status.textContent='All steps completed. Your wheel is ready.';
-  }else if(elapsed>=15){
+  }else if(elapsed>=30){
     lockmsg.textContent='🔒 Complete all 3 steps to unlock';
     status.textContent='Timer complete — click all three social-action buttons to unlock the spin.';
   }
@@ -275,9 +275,9 @@ function updateUnlock(){
 
 const timer=setInterval(()=>{
   elapsed++;
-  const remaining=Math.max(0,15-elapsed);
+  const remaining=Math.max(0,30-elapsed);
   document.getElementById('timer').textContent=remaining;
-  document.getElementById('bar').style.width=(Math.min(elapsed,15)/15*100)+'%';
+  document.getElementById('bar').style.width=(Math.min(elapsed,30)/30*100)+'%';
   if(remaining===0){
     clearInterval(timer);
     updateUnlock();
