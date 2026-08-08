@@ -3,16 +3,19 @@
 <html lang="en">
 <head>
 
-<!-- Google tag (gtag.js) - Galaxy Point GA4 -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-M287TE5R9G"></script>
+
+<!-- Google tag (gtag.js) - Galaxy Point GA4 DIAGNOSTIC -->
 <script>
   window.dataLayer = window.dataLayer || [];
   function gtag(){dataLayer.push(arguments);}
   gtag('js', new Date());
   gtag('config', 'G-M287TE5R9G', {
-    'send_page_view': true
+    send_page_view: true,
+    debug_mode: true
   });
 </script>
+<script id="ga4-loader" async src="https://www.googletagmanager.com/gtag/js?id=G-M287TE5R9G"></script>
+
 
 <meta charset="utf-8"/>
 <meta content="width=device-width,initial-scale=1,viewport-fit=cover" name="viewport"/>
@@ -285,6 +288,16 @@ body.showing-winner #lock{
   #winnerModal .winner-prize{font-size:18px}
   #winnerModal .winner-coupon{font-size:30px}
 }
+
+
+#gaStatus{
+ position:fixed;right:10px;bottom:10px;z-index:2147483646;
+ padding:8px 11px;border-radius:999px;font:700 11px/1.2 system-ui,sans-serif;
+ background:#2b1d00;color:#ffd76a;border:1px solid #7d5b11;
+ box-shadow:0 5px 18px rgba(0,0,0,.28)
+}
+#gaStatus.ok{background:#082b1c;color:#89f0b6;border-color:#1c8b57}
+#gaStatus.bad{background:#351016;color:#ff9aa8;border-color:#a53d4d}
 
 </style>
 <style>
@@ -736,6 +749,53 @@ document.addEventListener('DOMContentLoaded', function () {
     }).observe(winnerModal, {attributes:true, attributeFilter:['class']});
   }
 });
+</script>
+
+<div id="gaStatus">GA: checking…</div>
+
+<script>
+(function(){
+  function setStatus(text, cls){
+    var el=document.getElementById('gaStatus');
+    if(!el) return;
+    el.textContent=text;
+    el.className=cls||'';
+  }
+
+  var loader=document.getElementById('ga4-loader');
+  if(loader){
+    loader.addEventListener('load', function(){
+      setStatus('GA LOADED ✓','ok');
+      try{
+        gtag('event','gp_test_ping',{
+          debug_mode:true,
+          event_category:'diagnostic',
+          page_location:location.href,
+          page_title:document.title
+        });
+      }catch(e){}
+    });
+    loader.addEventListener('error', function(){
+      setStatus('GA BLOCKED ✕','bad');
+    });
+  }
+
+  setTimeout(function(){
+    if(window.google_tag_manager){
+      setStatus('GA LOADED ✓','ok');
+      try{
+        gtag('event','gp_test_ping',{
+          debug_mode:true,
+          event_category:'diagnostic',
+          page_location:location.href,
+          page_title:document.title
+        });
+      }catch(e){}
+    } else {
+      setStatus('GA NOT LOADED','bad');
+    }
+  }, 5000);
+})();
 </script>
 
 </body>
