@@ -1,6 +1,16 @@
 <!doctype html>
 <html lang="en">
 <head>
+<!-- Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-M287TE5R9G"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-M287TE5R9G');
+</script>
+<!-- End Google Analytics -->
+
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>Galaxy Point • Spin & Win</title>
@@ -241,6 +251,8 @@ let rotation=0,busy=false,elapsed=0;
 const completed=[false,false,false];
 
 function markStep(i){
+  const names=['instagram_follow_click','youtube_subscribe_click','google_review_click'];
+  if (typeof gtag === 'function') gtag('event', names[i], {event_category:'social_unlock'});
   completed[i]=true;
   document.getElementById('c'+i).classList.add('done');
   updateUnlock();
@@ -291,6 +303,7 @@ spin.addEventListener('click',()=>{
   spin.disabled=true;
   spin.textContent='🎡 SPINNING...';
 
+  if (typeof gtag === 'function') gtag('event', 'spin_started', {event_category:'spin_and_win'});
   const win=winningPrizes[Math.floor(Math.random()*winningPrizes.length)];
   const current=((rotation%360)+360)%360;
   const delta=(win.target-current+360)%360;
@@ -301,7 +314,9 @@ spin.addEventListener('click',()=>{
     document.getElementById('main').style.display='none';
     document.getElementById('result').style.display='block';
     document.getElementById('prize').textContent=win.name;
-    document.getElementById('code').textContent=win.code+'-'+Math.floor(1000+Math.random()*9000);
+    const finalCode=win.code+'-'+Math.floor(1000+Math.random()*9000);
+    document.getElementById('code').textContent=finalCode;
+    if (typeof gtag === 'function') gtag('event', 'prize_won', {event_category:'spin_and_win', prize:win.name});
     window.scrollTo({top:0,behavior:'smooth'});
   },5400);
 });
