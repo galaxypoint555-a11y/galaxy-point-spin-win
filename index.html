@@ -1,0 +1,310 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Galaxy Point • Spin & Win</title>
+<style>
+:root{
+  --blue:#168cff;--cyan:#44ddff;--gold:#ffd15c;--pink:#d946ef;
+  --white:#f7fbff;--muted:#b7c6d8;--panel:rgba(3,10,28,.86);
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  margin:0;color:var(--white);
+  font-family:Inter,system-ui,-apple-system,Segoe UI,sans-serif;
+  min-height:100vh;overflow-x:hidden;
+  background:
+    linear-gradient(180deg,rgba(2,5,20,.46),rgba(2,5,20,.78)),
+    url("spin-win-background.png") center top/cover fixed no-repeat;
+  background-color:#020713;
+}
+body:after{
+  content:"";position:fixed;inset:0;pointer-events:none;z-index:-1;
+  background:radial-gradient(circle at 50% 18%,transparent 0,rgba(0,0,0,.12) 38%,rgba(0,0,0,.62) 100%);
+}
+.wrap{max-width:600px;margin:auto;padding:14px 14px 42px}
+.hero{text-align:center;padding:8px 0 10px}
+.logo{
+  width:104px;height:78px;object-fit:contain;background:#fff;border-radius:18px;
+  padding:5px;margin:0 auto 8px;box-shadow:0 8px 35px #0008
+}
+.hero h1{margin:0;font-size:30px;letter-spacing:1px;text-shadow:0 3px 18px #000}
+.hero p{margin:4px 0;color:#e8eef7;font-size:13px}
+.headline{
+  display:inline-block;margin:12px 0 0;padding:9px 18px;border-radius:999px;
+  border:1px solid #35b8ff99;background:linear-gradient(90deg,#075bc955,#d946ef33);
+  box-shadow:0 0 28px #168cff33;color:#fff;font-weight:950;letter-spacing:.5px
+}
+.card{
+  background:linear-gradient(180deg,rgba(5,20,49,.90),rgba(2,9,25,.90));
+  border:1px solid #ffffff1d;border-radius:25px;padding:18px;margin-top:14px;
+  box-shadow:0 22px 65px #000b;backdrop-filter:blur(12px)
+}
+h2{margin:0 0 10px}
+.sub{color:var(--muted);font-size:13px;line-height:1.5}
+.steps{display:grid;grid-template-columns:1fr;gap:10px}
+.step{
+  display:flex;align-items:center;gap:9px;padding:11px;border-radius:16px;
+  background:#ffffff09;border:1px solid #ffffff14
+}
+.icon{
+  width:43px;height:43px;flex:0 0 43px;border-radius:13px;display:grid;place-items:center;
+  font-size:21px;background:#0b2a4d;border:1px solid #2d86e766
+}
+.step strong{display:block;font-size:13px}
+.step small{display:block;color:var(--muted);font-size:11px;margin-top:2px}
+.go{
+  margin-left:auto;text-decoration:none;color:#fff;background:linear-gradient(90deg,#147df5,#1ea7ff);
+  padding:9px 11px;border-radius:10px;font-weight:950;font-size:11px;white-space:nowrap
+}
+.check{
+  width:23px;height:23px;flex:0 0 23px;border-radius:50%;display:grid;place-items:center;
+  border:2px solid #52647a;color:transparent
+}
+.check.done{background:#20c768;border-color:#20c768;color:#fff}
+.lockmsg{text-align:center;color:var(--gold);font-weight:900;margin:12px 0 0}
+.timer{font-size:30px;font-weight:950;text-align:center;margin:4px 0;color:#fff}
+.progress{height:8px;background:#ffffff12;border-radius:999px;overflow:hidden;margin:8px 0 3px}
+.bar{height:100%;width:0;background:linear-gradient(90deg,var(--blue),var(--cyan),var(--pink));transition:width .2s linear}
+.status{text-align:center;font-size:11px;color:var(--muted);min-height:18px}
+
+.wheel-area{
+  position:relative;transition:filter .35s,opacity .35s,transform .35s;
+}
+.wheel-area.locked{filter:blur(7px);opacity:.40;pointer-events:none;user-select:none}
+.wheelbox{position:relative;width:min(91vw,430px);aspect-ratio:1;margin:18px auto}
+.wheel{
+  width:100%;height:100%;border-radius:50%;position:relative;overflow:hidden;
+  border:8px solid #eaf5ff;box-shadow:0 0 0 5px #ffd15c55,0 22px 65px #000;
+  transition:transform 5.2s cubic-bezier(.12,.72,.18,1);
+  background:conic-gradient(
+    #1477c7 0deg 72deg,
+    #9e3157 72deg 144deg,
+    #23894c 144deg 216deg,
+    #6431a7 216deg 288deg,
+    #c37a16 288deg 360deg
+  )
+}
+.seg{
+  position:absolute;inset:0;display:flex;justify-content:center;align-items:flex-start;
+  padding-top:18px;font-weight:950;font-size:11px;line-height:1.08;text-align:center;
+  transform-origin:center;text-shadow:0 2px 6px #000b;pointer-events:none
+}
+.s1{transform:rotate(36deg)}
+.s2{transform:rotate(108deg)}
+.s3{transform:rotate(180deg)}
+.s4{transform:rotate(252deg)}
+.s5{transform:rotate(324deg)}
+.product{
+  display:flex;flex-direction:column;align-items:center;gap:3px;width:115px
+}
+.product .pic{
+  width:66px;height:54px;display:grid;place-items:center;font-size:40px;
+  filter:drop-shadow(0 5px 5px #0008)
+}
+.product .name{font-size:10px;letter-spacing:.2px}
+.pointer{
+  position:absolute;z-index:8;left:50%;top:-3px;transform:translateX(-50%);
+  width:0;height:0;border-left:17px solid transparent;border-right:17px solid transparent;
+  border-top:37px solid #ff506d;filter:drop-shadow(0 3px 4px #000)
+}
+.center{
+  position:absolute;z-index:7;left:50%;top:50%;transform:translate(-50%,-50%);
+  width:91px;height:91px;border-radius:50%;background:#050e1a;border:4px solid #fff;
+  display:grid;place-items:center;font-weight:950;box-shadow:0 0 35px #000;color:#fff
+}
+.spinbtn{
+  width:100%;border:0;border-radius:16px;padding:16px;font-size:18px;font-weight:950;
+  color:#07101c;background:linear-gradient(90deg,#ffd15c,#fff0a6);
+  cursor:pointer;box-shadow:0 12px 32px #ffd15c35
+}
+.spinbtn:disabled{opacity:.5;cursor:not-allowed}
+.note{font-size:11px;color:var(--muted);line-height:1.5;text-align:center;margin-top:10px}
+.result{text-align:center;display:none}
+.prize{font-size:26px;font-weight:950;color:var(--gold);margin:10px 0}
+.code{
+  font-family:ui-monospace,monospace;background:#0009;padding:12px;border-radius:12px;
+  letter-spacing:2px;font-weight:900;margin:12px 0
+}
+.review{
+  display:block;text-decoration:none;text-align:center;color:#fff;background:#ffffff0b;
+  border:1px solid #ffffff14;border-radius:14px;padding:13px;font-weight:850
+}
+.footer{text-align:center;color:#91a4bb;font-size:11px;margin-top:16px}
+.legal{
+  color:#aab9c9;font-size:10px;line-height:1.45;text-align:center;margin:12px 4px 0
+}
+@media(min-width:520px){.steps{grid-template-columns:1fr 1fr}.step:last-child{grid-column:1/-1}}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header class="hero">
+  <img class="logo" src="galaxy-point-logo.jpg" alt="Galaxy Point logo">
+  <h1>GALAXY POINT</h1>
+  <p>Your Trust. Our Priority.</p>
+  <div class="headline">🎁 SPIN & WIN • AMAZING PRIZES</div>
+</header>
+
+<main id="main">
+<section class="card">
+  <h2>🔓 Unlock Your Spin</h2>
+  <div class="sub">Complete all three social actions and wait for the 15-second unlock timer. Until then, the wheel stays blurred and locked.</div>
+
+  <div class="steps">
+    <div class="step">
+      <div class="icon">📸</div>
+      <div><strong>Follow us on Instagram</strong><small>@galaxy_pointt26</small></div>
+      <a class="go" href="https://www.instagram.com/galaxy_pointt26/" target="_blank" rel="noopener" onclick="markStep(0)">FOLLOW</a>
+      <div id="c0" class="check">✓</div>
+    </div>
+
+    <div class="step">
+      <div class="icon">▶️</div>
+      <div><strong>Subscribe on YouTube</strong><small>Galaxy_Pointt</small></div>
+      <a class="go" href="https://www.youtube.com/@Galaxy_Pointt" target="_blank" rel="noopener" onclick="markStep(1)">SUBSCRIBE</a>
+      <div id="c1" class="check">✓</div>
+    </div>
+
+    <div class="step">
+      <div class="icon">⭐</div>
+      <div><strong>Leave us a Google Review</strong><small>Share your experience</small></div>
+      <a class="go" href="https://www.google.com/search?q=galaxy+point" target="_blank" rel="noopener" onclick="markStep(2)">REVIEW</a>
+      <div id="c2" class="check">✓</div>
+    </div>
+  </div>
+
+  <div class="lockmsg" id="lockmsg">🔒 Spin locked — complete the steps</div>
+  <div class="timer" id="timer">15</div>
+  <div class="progress"><div class="bar" id="bar"></div></div>
+  <div class="status" id="status">15-second timer is running. The spin unlocks only after all steps are completed.</div>
+</section>
+
+<section class="card">
+  <div id="wheelArea" class="wheel-area locked">
+    <div class="wheelbox">
+      <div class="pointer"></div>
+      <div id="wheel" class="wheel">
+
+        <div class="seg s1">
+          <div class="product"><div class="pic">📱</div><div class="name">iPHONE 17<br>PRO MAX</div></div>
+        </div>
+
+        <div class="seg s2">
+          <div class="product"><div class="pic">📱</div><div class="name">FOLD 8</div></div>
+        </div>
+
+        <div class="seg s3">
+          <div class="product"><div class="pic">🛵</div><div class="name">ACTIVA</div></div>
+        </div>
+
+        <div class="seg s4">
+          <div class="product"><div class="pic">🛡️</div><div class="name">FREE<br>TEMPERED GLASS</div></div>
+        </div>
+
+        <div class="seg s5">
+          <div class="product"><div class="pic">🏷️</div><div class="name">10%<br>DISCOUNT</div></div>
+        </div>
+      </div>
+      <div class="center">SPIN</div>
+    </div>
+  </div>
+
+  <button id="spin" class="spinbtn" disabled>🔒 SPIN LOCKED</button>
+  <div class="note">Promotional Spin & Win. The wheel contains five advertised options; only the two eligible promotional rewards can be selected as winning outcomes.</div>
+</section>
+</main>
+
+<section id="result" class="card result">
+  <div style="font-size:50px">🎉</div>
+  <h2>Congratulations!</h2>
+  <div id="prize" class="prize"></div>
+  <p>Show this screen at the Galaxy Point counter to claim your reward.</p>
+  <div id="code" class="code"></div>
+  <a class="review" href="https://www.google.com/search?q=galaxy+point" target="_blank" rel="noopener">⭐ Review Galaxy Point on Google</a>
+  <button class="spinbtn" style="margin-top:12px" onclick="location.reload()">DONE</button>
+</section>
+
+<div class="legal">Social-platform actions are opened for the customer to complete. This page cannot independently verify a follow or subscription. Prize terms and availability are determined by Galaxy Point.</div>
+<div class="footer">Galaxy Point • Smartphones • Accessories • Service</div>
+</div>
+
+<script>
+const wheel=document.getElementById('wheel');
+const spin=document.getElementById('spin');
+const area=document.getElementById('wheelArea');
+const status=document.getElementById('status');
+const lockmsg=document.getElementById('lockmsg');
+let rotation=0,busy=false,elapsed=0;
+const completed=[false,false,false];
+
+function markStep(i){
+  completed[i]=true;
+  document.getElementById('c'+i).classList.add('done');
+  updateUnlock();
+}
+
+function allStepsDone(){return completed.every(Boolean)}
+
+function updateUnlock(){
+  if(elapsed>=15 && allStepsDone()){
+    area.classList.remove('locked');
+    spin.disabled=false;
+    spin.textContent='🎁 SPIN NOW';
+    lockmsg.textContent='✅ Spin Unlocked! Good luck!';
+    status.textContent='All steps completed. Your wheel is ready.';
+  }else if(elapsed>=15){
+    lockmsg.textContent='🔒 Complete all 3 steps to unlock';
+    status.textContent='Timer complete — click all three social-action buttons to unlock the spin.';
+  }
+}
+
+const timer=setInterval(()=>{
+  elapsed++;
+  const remaining=Math.max(0,15-elapsed);
+  document.getElementById('timer').textContent=remaining;
+  document.getElementById('bar').style.width=(Math.min(elapsed,15)/15*100)+'%';
+  if(remaining===0){
+    clearInterval(timer);
+    updateUnlock();
+  }
+},1000);
+
+/*
+  Wheel geometry:
+  Each segment is 72 degrees.
+  The pointer is at the top (0 degrees).
+  Winning segment 4 midpoint = 252 degrees, so the wheel must rotate 108 degrees.
+  Winning segment 5 midpoint = 324 degrees, so the wheel must rotate 36 degrees.
+  This guarantees the pointer visually lands on the same segment whose prize is shown.
+*/
+const winningPrizes=[
+  {name:'FREE TEMPERED GLASS',code:'GPTEMPERED',target:108},
+  {name:'10% DISCOUNT',code:'GP10OFF',target:36}
+];
+
+spin.addEventListener('click',()=>{
+  if(busy || elapsed<15 || !allStepsDone()) return;
+  busy=true;
+  spin.disabled=true;
+  spin.textContent='🎡 SPINNING...';
+
+  const win=winningPrizes[Math.floor(Math.random()*winningPrizes.length)];
+  const current=((rotation%360)+360)%360;
+  const delta=(win.target-current+360)%360;
+  rotation+=2160+delta;
+  wheel.style.transform=`rotate(${rotation}deg)`;
+
+  setTimeout(()=>{
+    document.getElementById('main').style.display='none';
+    document.getElementById('result').style.display='block';
+    document.getElementById('prize').textContent=win.name;
+    document.getElementById('code').textContent=win.code+'-'+Math.floor(1000+Math.random()*9000);
+    window.scrollTo({top:0,behavior:'smooth'});
+  },5400);
+});
+</script>
+</body>
+</html>
