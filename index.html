@@ -72,6 +72,121 @@ body:before{content:"";position:fixed;inset:0;pointer-events:none;background:lin
 
 .task-card.done,.action.done{border-color:#26d478!important;box-shadow:0 0 0 1px rgba(38,212,120,.25),0 0 20px rgba(38,212,120,.10)!important}
 .task-card.done .task-status{color:#79f0ae!important}
+
+/* ===== Celebration after spin ===== */
+.confetti-layer{
+  position:fixed;inset:0;pointer-events:none;z-index:9999;overflow:hidden;
+  display:none;
+}
+.confetti-layer.show{display:block}
+.confetti-piece{
+  position:absolute;top:-20px;width:10px;height:18px;border-radius:2px;
+  animation:confettiFall 2.8s linear forwards;
+}
+@keyframes confettiFall{
+  0%{transform:translate3d(0,-30px,0) rotate(0deg);opacity:1}
+  100%{transform:translate3d(var(--drift),110vh,0) rotate(720deg);opacity:0}
+}
+.result.show{
+  animation:resultPop .55s cubic-bezier(.17,.89,.32,1.28);
+}
+@keyframes resultPop{
+  0%{transform:scale(.84);opacity:0}
+  100%{transform:scale(1);opacity:1}
+}
+.celebrate-glow{
+  box-shadow:0 0 0 2px rgba(255,210,80,.35),0 0 42px rgba(255,210,80,.22)!important;
+}
+
+
+/* ===== MOBILE SPIN + RESULT MODAL FIX ===== */
+.lock.hidden{
+  display:none!important;
+  opacity:0!important;
+  visibility:hidden!important;
+  pointer-events:none!important;
+}
+body.is-spinning .lock{
+  display:none!important;
+  opacity:0!important;
+  visibility:hidden!important;
+  pointer-events:none!important;
+}
+
+/* Result should be a centered modal, not an inline block below the wheel. */
+.result{
+  display:none!important;
+}
+.result.show{
+  display:flex!important;
+  position:fixed!important;
+  inset:0!important;
+  z-index:10000!important;
+  margin:0!important;
+  max-width:none!important;
+  width:100%!important;
+  min-height:100dvh!important;
+  padding:22px!important;
+  background:rgba(1,6,18,.78)!important;
+  backdrop-filter:blur(10px)!important;
+  -webkit-backdrop-filter:blur(10px)!important;
+  align-items:center!important;
+  justify-content:center!important;
+  flex-direction:column!important;
+  text-align:center!important;
+  animation:modalFade .28s ease-out!important;
+}
+.result.show::before{
+  content:"";
+  position:absolute;
+  width:min(88vw,430px);
+  min-height:260px;
+  border-radius:26px;
+  background:linear-gradient(180deg,#0b2144 0%,#07152e 58%,#08101d 100%);
+  border:1px solid rgba(75,171,255,.45);
+  box-shadow:0 24px 80px rgba(0,0,0,.55),0 0 38px rgba(34,137,255,.18);
+  z-index:-1;
+}
+.result.show > *{
+  width:min(80vw,360px);
+  position:relative;
+}
+.result.show h3{
+  font-size:26px!important;
+  margin:4px 0 10px!important;
+  color:#ffd65a!important;
+}
+.result.show #winText{
+  font-size:22px!important;
+  margin:8px 0!important;
+}
+.result.show .coupon{
+  font-size:30px!important;
+  margin:12px 0!important;
+  color:#fff!important;
+}
+.result.show small{
+  color:#b7c9e4!important;
+  line-height:1.5!important;
+}
+@keyframes modalFade{
+  from{opacity:0;transform:scale(.97)}
+  to{opacity:1;transform:scale(1)}
+}
+@media(max-width:600px){
+  .result.show{
+    padding:18px!important;
+    min-height:100svh!important;
+  }
+  .result.show::before{
+    width:90vw!important;
+    min-height:290px!important;
+  }
+  .result.show h3{font-size:23px!important}
+  .result.show #winText{font-size:20px!important}
+  .result.show .coupon{font-size:27px!important}
+}
+
 </style>
 <style>
 img{max-width:100%;}
@@ -179,7 +294,7 @@ img[src^="data:image/"]{visibility:visible!important;opacity:1!important;}
 <h3>🎉 CONGRATULATIONS!</h3>
 <div id="winText"></div>
 <div class="coupon" id="coupon"></div>
-<small>Show this coupon at Galaxy Point. One coupon per browser/person.</small>
+<small>Show this coupon at Galaxy Point. One coupon per browser/person.</small><button id="closeResult" type="button" style="margin-top:18px;padding:12px 20px;border:0;border-radius:14px;background:linear-gradient(180deg,#ffe16a,#ffb112);font-weight:900;font-size:16px;cursor:pointer">DONE</button>
 </div>
 </main>
 <div class="prizes-row">
@@ -216,7 +331,7 @@ const links={
 
 // Campaign-specific key prevents an old test/localStorage value from keeping
 // the new 40-second campaign button permanently locked.
-const SPIN_KEY="gp_spun_campaign_40s_socialfix_v3";
+const SPIN_KEY="gp_spun_campaign_40s_mobilemodal_v6";
 const COUPON_KEY="gp_coupon_counter_v1";
 const COUNTDOWN=40;
 let done={ig:false,yt:false,gr:false};
@@ -271,13 +386,18 @@ function checkUnlock(){
     else if(ready) spin.textContent="🎡 SPIN NOW";
     else spin.textContent="🔒 SPIN NOW";
   }
-  if(lock) lock.classList.toggle("hidden",ready || alreadySpun);
+  if(lock){
+    const shouldHide=ready || alreadySpun || spinning;
+    lock.classList.toggle("hidden",shouldHide);
+    lock.style.display=shouldHide ? "none" : "";
+    lock.setAttribute("aria-hidden",String(shouldHide));
+  }
 
   if(status){
     if(alreadySpun) status.textContent="Spin completed • one coupon issued";
     else if(spinning) status.textContent="Spinning… please wait";
     else if(!tasksComplete) status.textContent="Complete all three actions to unlock your spin.";
-    else if(left>0) status.textContent=`Unlocked after ${left} seconds…`;
+    else if(left>0) status.textContent=`Unlocks in ${left} seconds…`;
     else status.textContent="Unlocked — you have 1 spin.";
   }
 }
@@ -333,6 +453,36 @@ function animateWheelTo(targetAngle, duration=5600){
 // Establish the initial upright state.
 setWheelRotation(0);
 
+
+function launchCelebration(){
+  const layer=document.getElementById("confettiLayer");
+  const result=document.getElementById("result");
+  if(!layer) return;
+
+  layer.innerHTML="";
+  layer.classList.add("show");
+  if(result) result.classList.add("celebrate-glow");
+
+  const colors=["#ffd84d","#1fa2ff","#ff4f9a","#56e39f","#ffffff","#9b6cff"];
+  for(let i=0;i<90;i++){
+    const p=document.createElement("span");
+    p.className="confetti-piece";
+    p.style.left=(Math.random()*100)+"vw";
+    p.style.background=colors[Math.floor(Math.random()*colors.length)];
+    p.style.setProperty("--drift",((Math.random()*240)-120)+"px");
+    p.style.animationDelay=(Math.random()*.45)+"s";
+    p.style.animationDuration=(2.2+Math.random()*1.6)+"s";
+    p.style.transform=`rotate(${Math.random()*180}deg)`;
+    layer.appendChild(p);
+  }
+
+  setTimeout(()=>{
+    layer.classList.remove("show");
+    layer.innerHTML="";
+    if(result) result.classList.remove("celebrate-glow");
+  },4200);
+}
+
 document.getElementById("spin").addEventListener("click",async function(e){
   e.preventDefault();
   if(spinning || localStorage.getItem(SPIN_KEY)==="1") return;
@@ -344,6 +494,13 @@ document.getElementById("spin").addEventListener("click",async function(e){
   }
 
   spinning=true;
+  document.body.classList.add("is-spinning");
+  const lock=document.getElementById("lock");
+  if(lock){
+    lock.classList.add("hidden");
+    lock.style.display="none";
+    lock.setAttribute("aria-hidden","true");
+  }
   checkUnlock();
 
   // The wheel visually contains 5 campaign options.
@@ -362,11 +519,29 @@ document.getElementById("spin").addEventListener("click",async function(e){
     ? "<b>FREE TEMPERED GLASS</b>"
     : "<b>10% DISCOUNT ON MOBILE ACCESSORIES</b>";
   document.getElementById("coupon").textContent="COUPON #"+code;
-  document.getElementById("result").classList.add("show");
+  document.body.classList.remove("is-spinning");
+  document.body.style.overflow="hidden";
+  const result=document.getElementById("result");
+  result.classList.add("show");
+  result.setAttribute("role","dialog");
+  result.setAttribute("aria-modal","true");
+  launchCelebration();
   document.getElementById("spin").disabled=true;
   spinning=false;
   checkUnlock();
 });
+
+document.addEventListener("click",function(e){
+  if(e.target && e.target.id==="closeResult"){
+    const result=document.getElementById("result");
+    result.classList.remove("show");
+    result.removeAttribute("role");
+    result.removeAttribute("aria-modal");
+    document.body.style.overflow="";
+  }
+});
+
 </script>
+<div id="confettiLayer" class="confetti-layer"></div>
 </body>
 </html>
