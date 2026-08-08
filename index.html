@@ -147,6 +147,26 @@ h2{margin:0 0 10px}
   color:#aab9c9;font-size:10px;line-height:1.45;text-align:center;margin:12px 4px 0
 }
 @media(min-width:520px){.steps{grid-template-columns:1fr 1fr}.step:last-child{grid-column:1/-1}}
+
+/* Premium Galaxy Point prize showcase */
+.prize-showcase{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:14px 0}
+.prize-card{position:relative;min-height:120px;padding:12px 8px;border-radius:18px;overflow:hidden;
+  background:linear-gradient(145deg,rgba(12,40,78,.92),rgba(7,11,28,.94));
+  border:1px solid rgba(91,194,255,.25);box-shadow:inset 0 1px rgba(255,255,255,.08),0 12px 30px rgba(0,0,0,.25)}
+.prize-card.featured{border-color:rgba(255,209,92,.62);box-shadow:0 0 28px rgba(255,209,92,.16),inset 0 1px rgba(255,255,255,.09)}
+.prize-art{height:55px;display:grid;place-items:center;font-size:38px;filter:drop-shadow(0 5px 8px rgba(0,0,0,.45))}
+.prize-card strong{display:block;text-align:center;font-size:11px;line-height:1.2;margin-top:5px}
+.prize-card small{display:block;text-align:center;color:#aebfd2;font-size:9px;margin-top:4px}
+.campaign{
+  margin:10px 0 0;text-align:center;padding:12px 14px;border-radius:17px;
+  background:linear-gradient(90deg,rgba(20,125,245,.18),rgba(217,70,239,.12),rgba(255,209,92,.12));
+  border:1px solid rgba(92,188,255,.24)
+}
+.campaign .big{font-size:22px;font-weight:1000;letter-spacing:.4px}
+.campaign .small{font-size:11px;color:#b7c8db;margin-top:3px}
+.wheel-center-logo{width:46px;height:46px;object-fit:contain;border-radius:11px;background:#fff;padding:3px;display:block;margin:0 auto 2px;box-shadow:0 0 18px rgba(68,221,255,.35)}
+@media(max-width:430px){.prize-showcase{gap:7px}.prize-card{min-height:112px}.prize-art{font-size:33px}.campaign .big{font-size:19px}}
+
 </style>
 </head>
 <body>
@@ -155,13 +175,26 @@ h2{margin:0 0 10px}
   <img class="logo" src="galaxy-point-logo.jpg" alt="Galaxy Point logo">
   <h1>GALAXY POINT</h1>
   <p>Your Trust. Our Priority.</p>
-  <div class="headline">🎁 SPIN & WIN • AMAZING PRIZES</div>
+  <div class="campaign">
+    <div class="big">🎡 SPIN KARO • PRIZE JEETO!</div>
+    <div class="small">Exciting prizes are waiting for you</div>
+  </div>
 </header>
 
 <main id="main">
 <section class="card">
+  <h2>🏆 Today’s Featured Prizes</h2>
+  <div class="sub">Big prizes are showcased below. Your spin can land only on the two eligible reward outcomes shown on the wheel.</div>
+  <div class="prize-showcase">
+    <div class="prize-card featured"><div class="prize-art">🛵</div><strong>ACTIVA</strong><small>Grand Prize</small></div>
+    <div class="prize-card"><div class="prize-art">📱</div><strong>iPHONE 17 PRO MAX</strong><small>Featured Prize</small></div>
+    <div class="prize-card"><div class="prize-art">📱</div><strong>FOLD 8</strong><small>Featured Prize</small></div>
+  </div>
+</section>
+
+<section class="card">
   <h2>🔓 Unlock Your Spin</h2>
-  <div class="sub">Complete all three social actions and wait for the 30-second unlock timer. Until then, the wheel stays blurred and locked.</div>
+  <div class="sub">Complete all three social actions and wait for the 50-second unlock timer. Until then, the wheel stays blurred and locked.</div>
 
   <div class="steps">
     <div class="step">
@@ -181,15 +214,15 @@ h2{margin:0 0 10px}
     <div class="step">
       <div class="icon">⭐</div>
       <div><strong>Leave us a Google Review</strong><small>Share your experience</small></div>
-      <a class="go" href="https://www.google.com/search?q=galaxy+point" target="_blank" rel="noopener" onclick="markStep(2)">REVIEW</a>
+      <a class="go" href="https://www.google.com/search?client=ms-android-motorola-rvo3&hs=xyjV&sca_esv=9c657c4e40520787&sxsrf=APpeQntU9IWPz71vNE1LYII0mSdfPtVN0Q:1786187414373&q=galaxy+point+reviews&uds=AJ5uw18lbV5404zePY6Dir_tkcjV7m_KWYml0ALITrh6vIPyIvPWTELn8PO0V4ro4H9RlJzp5KMtdq0EgJO5jI52kJq2U-6SwOJnxO_cuKiIdx1Qq7JxFdg_bwdcuCqziKE8JjoWfYigznL9-RJEAfBNvi4cPMU0A8b4nVTkNtMOsC0gUt97x_IYY3gikYvQTEeDzq9kPsJnY7yaDn7pgOzw-bvr-6oZ7bS147gN2D5l4tlm8Xyo0CaDWJs74N_gd1q0Xp0L9OtWQmTUwHbW-Q47poKgOGHQOo6gQGjNxK9P_tKh6NMjRf8F2CkEwx7gJYf8AtEhJRTgMmKR9fTPOZPO56w-RLhFq0I8iiDFoSwBZNklfrmMFdHLOK61_CAxb3ssi14qMNrrOUYJPC04v1fev4X5Cn-zd29RxbRMts3BnytyH40_LSs1GfB8qulutNMSlfjOtAtsWIOkCyAOqNqpPCA1YkqWqSuC-YdrimQECtbaYLkomBX-B3tuio6b5445-XDgY2rXkb8aUqq2z3dz075VsaS8Iw&si=APenkKm7iecQ4G6P-TsbSMFKIQtv3EFIqRAFw-i8uEbk55Z-__m3CP9eIsoWKGz8P9c-aH12YJaWel9oAUIPPsUMnN09suPlS_ONNbSLMzxfg_lDGUtDGN2KJwb-DaI5HTMWaFD24JoX&sa=X&ved=2ahUKEwiw4NfS8pCWAxX6jOEIHbD0DokQk8gLegQIHhAB&ictx=1&biw=432&bih=842&dpr=2.5#ebo=1" target="_blank" rel="noopener" onclick="markStep(2)">REVIEW</a>
       <div id="c2" class="check">✓</div>
     </div>
   </div>
 
   <div class="lockmsg" id="lockmsg">🔒 Spin locked — complete the steps</div>
-  <div class="timer" id="timer">30</div>
+  <div class="timer" id="timer">50</div>
   <div class="progress"><div class="bar" id="bar"></div></div>
-  <div class="status" id="status">30-second timer is running. The spin unlocks only after all steps are completed.</div>
+  <div class="status" id="status">50-second timer is running. The spin unlocks only after all steps are completed.</div>
 </section>
 
 <section class="card">
@@ -215,10 +248,10 @@ h2{margin:0 0 10px}
         </div>
 
         <div class="seg s5">
-          <div class="product"><div class="pic">🏷️</div><div class="name">10%<br>DISCOUNT</div></div>
+          <div class="product"><div class="pic">🏷️</div><div class="name">10%<br>DISCOUNT ON MOBILE<br>ACCESSORIES</div></div>
         </div>
       </div>
-      <div class="center">SPIN</div>
+      <div class="center"><img class="wheel-center-logo" src="galaxy-point-logo.jpg" alt="Galaxy Point"><span style="font-size:10px">SPIN</span></div>
     </div>
   </div>
 
@@ -231,9 +264,9 @@ h2{margin:0 0 10px}
   <div style="font-size:50px">🎉</div>
   <h2>Congratulations!</h2>
   <div id="prize" class="prize"></div>
-  <p>Show this screen at the Galaxy Point counter to claim your reward.</p>
+  <p>Show this screen at the Galaxy Point counter to claim your reward. One coupon per customer.</p>
   <div id="code" class="code"></div>
-  <a class="review" href="https://www.google.com/search?q=galaxy+point" target="_blank" rel="noopener">⭐ Review Galaxy Point on Google</a>
+  <a class="review" href="https://www.google.com/search?client=ms-android-motorola-rvo3&hs=xyjV&sca_esv=9c657c4e40520787&sxsrf=APpeQntU9IWPz71vNE1LYII0mSdfPtVN0Q:1786187414373&q=galaxy+point+reviews&uds=AJ5uw18lbV5404zePY6Dir_tkcjV7m_KWYml0ALITrh6vIPyIvPWTELn8PO0V4ro4H9RlJzp5KMtdq0EgJO5jI52kJq2U-6SwOJnxO_cuKiIdx1Qq7JxFdg_bwdcuCqziKE8JjoWfYigznL9-RJEAfBNvi4cPMU0A8b4nVTkNtMOsC0gUt97x_IYY3gikYvQTEeDzq9kPsJnY7yaDn7pgOzw-bvr-6oZ7bS147gN2D5l4tlm8Xyo0CaDWJs74N_gd1q0Xp0L9OtWQmTUwHbW-Q47poKgOGHQOo6gQGjNxK9P_tKh6NMjRf8F2CkEwx7gJYf8AtEhJRTgMmKR9fTPOZPO56w-RLhFq0I8iiDFoSwBZNklfrmMFdHLOK61_CAxb3ssi14qMNrrOUYJPC04v1fev4X5Cn-zd29RxbRMts3BnytyH40_LSs1GfB8qulutNMSlfjOtAtsWIOkCyAOqNqpPCA1YkqWqSuC-YdrimQECtbaYLkomBX-B3tuio6b5445-XDgY2rXkb8aUqq2z3dz075VsaS8Iw&si=APenkKm7iecQ4G6P-TsbSMFKIQtv3EFIqRAFw-i8uEbk55Z-__m3CP9eIsoWKGz8P9c-aH12YJaWel9oAUIPPsUMnN09suPlS_ONNbSLMzxfg_lDGUtDGN2KJwb-DaI5HTMWaFD24JoX&sa=X&ved=2ahUKEwiw4NfS8pCWAxX6jOEIHbD0DokQk8gLegQIHhAB&ictx=1&biw=432&bih=842&dpr=2.5#ebo=1" target="_blank" rel="noopener">⭐ Review Galaxy Point on Google</a>
   <button class="spinbtn" style="margin-top:12px" onclick="location.reload()">DONE</button>
 </section>
 
@@ -261,23 +294,32 @@ function markStep(i){
 function allStepsDone(){return completed.every(Boolean)}
 
 function updateUnlock(){
-  if(elapsed>=30 && allStepsDone()){
+  if(elapsed>=50 && allStepsDone() && !hasExistingCoupon()){
     area.classList.remove('locked');
     spin.disabled=false;
     spin.textContent='🎁 SPIN NOW';
     lockmsg.textContent='✅ Spin Unlocked! Good luck!';
     status.textContent='All steps completed. Your wheel is ready.';
-  }else if(elapsed>=30){
+  }else if(elapsed>=50){
     lockmsg.textContent='🔒 Complete all 3 steps to unlock';
     status.textContent='Timer complete — click all three social-action buttons to unlock the spin.';
   }
 }
 
+
+if(hasExistingCoupon()){
+  area.classList.remove('locked');
+  spin.disabled=true;
+  spin.textContent='✅ COUPON ALREADY ISSUED';
+  lockmsg.textContent='🎟️ One coupon per customer';
+  status.textContent='This browser has already received a Galaxy Point coupon.';
+}
+
 const timer=setInterval(()=>{
   elapsed++;
-  const remaining=Math.max(0,30-elapsed);
+  const remaining=Math.max(0,50-elapsed);
   document.getElementById('timer').textContent=remaining;
-  document.getElementById('bar').style.width=(Math.min(elapsed,30)/30*100)+'%';
+  document.getElementById('bar').style.width=(Math.min(elapsed,50)/50*100)+'%';
   if(remaining===0){
     clearInterval(timer);
     updateUnlock();
@@ -294,8 +336,35 @@ const timer=setInterval(()=>{
 */
 const winningPrizes=[
   {name:'FREE TEMPERED GLASS',code:'GPTEMPERED',target:108},
-  {name:'10% DISCOUNT',code:'GP10OFF',target:36}
+  {name:'10% DISCOUNT ON MOBILE ACCESSORIES',code:'GP10OFF',target:36}
 ];
+
+
+const COUPON_KEY='galaxy_point_coupon_v1';
+function getOrCreateCoupon(prize){
+  let saved=null;
+  try{ saved=JSON.parse(localStorage.getItem(COUPON_KEY)||'null'); }catch(e){}
+  if(saved && saved.number && saved.prize){
+    return {number:saved.number, display:'GP-'+String(saved.number).padStart(3,'0')};
+  }
+  /*
+    The browser-side counter starts at 001 and prevents a repeat coupon
+    on the same browser. A truly global 001,002,003 counter across all
+    customer phones requires a server/database; this static GitHub Pages
+    version intentionally does not pretend otherwise.
+  */
+  let n=1;
+  try{
+    const last=parseInt(localStorage.getItem('galaxy_point_last_coupon')||'0',10);
+    n=Number.isFinite(last)&&last>=1 ? last+1 : 1;
+    localStorage.setItem('galaxy_point_last_coupon',String(n));
+    localStorage.setItem(COUPON_KEY,JSON.stringify({number:n,prize:prize,createdAt:Date.now()}));
+  }catch(e){}
+  return {number:n,display:'GP-'+String(n).padStart(3,'0')};
+}
+function hasExistingCoupon(){
+  try{return !!localStorage.getItem(COUPON_KEY)}catch(e){return false}
+}
 
 spin.addEventListener('click',()=>{
   if(busy || elapsed<15 || !allStepsDone()) return;
