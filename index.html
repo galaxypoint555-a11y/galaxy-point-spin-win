@@ -4,7 +4,7 @@
 <head>
 <meta charset="utf-8"/>
 <meta content="width=device-width,initial-scale=1,viewport-fit=cover" name="viewport"/>
-<title>Galaxy Point — Spin Karo Aur Jeeto</title>
+<meta name="gp-build" content="V13-PRO-POPUP-20260808"><title>Galaxy Point — Spin Karo Aur Jeeto</title>
 <meta content="#030817" name="theme-color"/>
 <style>
 :root{--blue:#1477ff;--gold:#ffc83d;--cyan:#20c7ff;--bg:#020615;--card:#07142d;--muted:#9eb0cf}
@@ -24,7 +24,7 @@ body:before{content:"";position:fixed;inset:0;pointer-events:none;background:lin
 .slice{position:absolute;left:50%;top:0;width:50%;height:100%;transform-origin:0 50%;clip-path:polygon(0 50%,100% 0,100% 100%);display:flex;align-items:center;justify-content:flex-start;border-left:1px solid rgba(255,255,255,.18)}.slice:nth-child(1){transform:rotate(-36deg)}.slice:nth-child(2){transform:rotate(36deg)}.slice:nth-child(3){transform:rotate(108deg)}.slice:nth-child(4){transform:rotate(180deg)}.slice:nth-child(5){transform:rotate(252deg)}
 .slice .inner{position:absolute;left:12px;top:50%;transform:translateY(-50%);width:122px;text-align:center;font-size:clamp(10px,1.35vw,15px);font-weight:1000;line-height:1.08;letter-spacing:.25px;color:#fff;text-shadow:0 2px 8px rgba(0,0,0,.65);padding:6px;white-space:normal}.slice:nth-child(1) .inner{transform:translateY(-50%) rotate(36deg);color:#fff}.slice:nth-child(2) .inner{transform:translateY(-50%) rotate(-36deg);color:#f3fff9}.slice:nth-child(3) .inner{transform:translateY(-50%) rotate(-108deg)}.slice:nth-child(4) .inner{transform:translateY(-50%) rotate(-180deg)}.slice:nth-child(5) .inner{transform:translateY(-50%) rotate(-252deg)}.slice img{display:block;margin:4px auto 5px;width:62px;height:52px;object-fit:contain;filter:drop-shadow(0 5px 7px rgba(0,0,0,.8))}.center{position:absolute;z-index:6;width:25%;aspect-ratio:1;border-radius:50%;background:radial-gradient(circle at 35% 30%,#ffffff,#eaf4ff 45%,#c8dcf4 100%);border:7px solid #0b2142;box-shadow:0 0 0 3px #2a8cff,0 0 28px rgba(38,143,255,.42),inset 0 2px 7px rgba(255,255,255,.9);display:grid;place-items:center}.center img{width:72%;height:72%;object-fit:contain;border-radius:50%}
 .lock{position:absolute;inset:12%;z-index:8;border-radius:50%;display:grid;place-items:center;background:rgba(2,7,18,.62);backdrop-filter:blur(6px);transition:.35s}.lock.hidden{opacity:0;pointer-events:none}.lockbox{background:rgba(3,12,28,.88);border:1px solid #2c6fc9;border-radius:18px;padding:18px 22px;box-shadow:0 12px 30px #000}.lockicon{font-size:34px}.timer{font-size:36px;font-weight:1000;color:#66d9ff;text-shadow:0 0 16px rgba(32,199,255,.35)}.lockbox p{margin:3px 0;color:#b7c9e4;font-size:12px}.actions{display:flex;justify-content:center;gap:8px;flex-wrap:wrap;margin:14px 0}.action{border:1px solid #245fa8;background:#06172f;color:#dceaff;padding:8px 11px;border-radius:10px;font-weight:800;font-size:12px}.action.done{border-color:#28c76f;background:#082d20;color:#8ff0b7}.spinbtn{width:min(100%,360px);border:0;border-radius:16px;padding:16px 22px;font-size:20px;font-weight:1000;letter-spacing:.8px;color:#221300;background:linear-gradient(180deg,#ffe16a,#f7a600);box-shadow:0 8px 25px rgba(255,179,0,.25);cursor:pointer}.spinbtn:disabled{filter:grayscale(1);opacity:.45;cursor:not-allowed}.note{font-size:11px;color:#7f94b8;margin-top:8px}
-.result{display:none;margin:15px auto 0;max-width:420px;border:1px solid #d39d1b;background:linear-gradient(180deg,#1d260c,#0c1206);border-radius:18px;padding:18px}.result.show{display:block}.result h3{margin:0 0 5px;color:#ffd451}.coupon{font-size:29px;font-weight:1000;letter-spacing:2px}.result small{color:#b9c8a3}
+.result{display:none;margin:15px auto 0;max-width:420px;border:1px solid #d39d1b;background:linear-gradient(180deg,#1d260c,#0c1206);border-radius:18px;padding:18px}.result.show{display:none!important;display:block}.result h3{margin:0 0 5px;color:#ffd451}.coupon{font-size:29px;font-weight:1000;letter-spacing:2px}.result small{color:#b9c8a3}
 .steps{margin-top:18px;border-top:1px solid #16365f;padding-top:14px;display:grid;grid-template-columns:repeat(4,1fr);gap:8px}.step{font-size:10px;color:#a7bad6}.step b{display:block;color:#fff;font-size:12px;margin-bottom:3px}
 .footer{margin-top:22px;text-align:center;color:#7389ad;font-size:11px}
 .wheel .slice:nth-child(n+6){display:none}.wheel:after{content:"";position:absolute;inset:0;border-radius:50%;pointer-events:none;box-shadow:inset 0 0 0 1px rgba(255,255,255,.12),inset 0 0 35px rgba(0,0,0,.22)}
@@ -87,7 +87,7 @@ body:before{content:"";position:fixed;inset:0;pointer-events:none;background:lin
   0%{transform:translate3d(0,-30px,0) rotate(0deg);opacity:1}
   100%{transform:translate3d(var(--drift),110vh,0) rotate(720deg);opacity:0}
 }
-.result.show{
+.result.show{display:none!important;
   animation:resultPop .55s cubic-bezier(.17,.89,.32,1.28);
 }
 @keyframes resultPop{
@@ -117,7 +117,7 @@ body.is-spinning .lock{
 .result{
   display:none!important;
 }
-.result.show{
+.result.show{display:none!important;
   display:flex!important;
   position:fixed!important;
   inset:0!important;
@@ -174,7 +174,7 @@ body.is-spinning .lock{
   to{opacity:1;transform:scale(1)}
 }
 @media(max-width:600px){
-  .result.show{
+  .result.show{display:none!important;
     padding:18px!important;
     min-height:100svh!important;
   }
@@ -185,6 +185,93 @@ body.is-spinning .lock{
   .result.show h3{font-size:23px!important}
   .result.show #winText{font-size:20px!important}
   .result.show .coupon{font-size:27px!important}
+}
+
+
+/* ===== V13 MOBILE-PROFESSIONAL SPIN RESULT FIX ===== */
+body.is-spinning #countdownBar,
+body.showing-winner #countdownBar,
+body.is-spinning #lock,
+body.showing-winner #lock{
+  display:none!important;
+  opacity:0!important;
+  visibility:hidden!important;
+  pointer-events:none!important;
+}
+
+#winnerModal{
+  position:fixed!important;
+  inset:0!important;
+  z-index:2147483000!important;
+  display:none;
+  align-items:center!important;
+  justify-content:center!important;
+  padding:18px!important;
+  background:rgba(1,5,15,.86)!important;
+  backdrop-filter:blur(14px)!important;
+  -webkit-backdrop-filter:blur(14px)!important;
+}
+#winnerModal.show{display:flex!important}
+#winnerModal .winner-card{
+  position:relative;
+  width:min(92vw,420px);
+  border-radius:28px;
+  padding:28px 22px 22px;
+  text-align:center;
+  background:
+    radial-gradient(circle at 50% 0%,rgba(38,133,255,.22),transparent 38%),
+    linear-gradient(180deg,#0a2042 0%,#06152d 58%,#050d1b 100%);
+  border:1px solid rgba(103,188,255,.42);
+  box-shadow:0 28px 90px rgba(0,0,0,.62),0 0 55px rgba(39,131,255,.18);
+  animation:winnerPop .52s cubic-bezier(.18,.89,.32,1.25);
+  overflow:hidden;
+}
+#winnerModal .winner-card:before{
+  content:"";position:absolute;inset:0;pointer-events:none;
+  background:linear-gradient(125deg,transparent 25%,rgba(255,255,255,.07),transparent 55%);
+}
+#winnerModal .winner-icon{
+  width:72px;height:72px;margin:0 auto 12px;border-radius:50%;
+  display:grid;place-items:center;font-size:34px;
+  background:linear-gradient(180deg,#ffe373,#ffb318);
+  box-shadow:0 10px 32px rgba(255,179,24,.28);
+}
+#winnerModal .winner-kicker{
+  color:#91bce8;font-size:11px;font-weight:900;letter-spacing:1.6px;
+}
+#winnerModal .winner-title{
+  margin:6px 0 12px;font-size:28px;line-height:1.05;font-weight:1000;color:#fff;
+}
+#winnerModal .winner-prize{
+  margin:10px auto 14px;padding:14px 12px;border-radius:18px;
+  background:rgba(11,38,77,.72);border:1px solid rgba(72,158,255,.28);
+  font-size:21px;font-weight:950;color:#ffd85b;
+}
+#winnerModal .winner-coupon-label{
+  font-size:10px;letter-spacing:1.4px;color:#8fa9c7;font-weight:900;
+}
+#winnerModal .winner-coupon{
+  margin:5px 0 10px;font-size:34px;font-weight:1000;letter-spacing:2px;color:#fff;
+}
+#winnerModal .winner-note{
+  color:#aebfd5;font-size:12px;line-height:1.5;margin:0 auto 18px;max-width:320px;
+}
+#winnerModal .winner-done{
+  width:100%;border:0;border-radius:16px;padding:14px 18px;
+  font-size:16px;font-weight:1000;color:#1b1200;
+  background:linear-gradient(180deg,#ffe16a,#ffad12);
+  box-shadow:0 10px 28px rgba(255,173,18,.22);
+}
+@keyframes winnerPop{
+  0%{opacity:0;transform:translateY(20px) scale(.86)}
+  100%{opacity:1;transform:translateY(0) scale(1)}
+}
+@media(max-width:600px){
+  #winnerModal{min-height:100svh!important}
+  #winnerModal .winner-card{width:92vw!important;padding:25px 18px 20px}
+  #winnerModal .winner-title{font-size:24px}
+  #winnerModal .winner-prize{font-size:18px}
+  #winnerModal .winner-coupon{font-size:30px}
 }
 
 </style>
@@ -331,7 +418,7 @@ const links={
 
 // Campaign-specific key prevents an old test/localStorage value from keeping
 // the new 40-second campaign button permanently locked.
-const SPIN_KEY="gp_spun_campaign_40s_mobilemodal_v6";
+const SPIN_KEY="gp_spun_campaign_40s_propopup_v7";
 const COUPON_KEY="gp_coupon_counter_v1";
 const COUNTDOWN=40;
 let done={ig:false,yt:false,gr:false};
@@ -376,8 +463,14 @@ function checkUnlock(){
 
   const countdownValue=document.getElementById("countdownValue");
   const countdownLabel=document.getElementById("countdownLabel");
-  if(countdownValue) countdownValue.textContent=String(left);
-  if(countdownLabel) countdownLabel.textContent=alreadySpun ? "SPIN COMPLETED" : (left>0 ? "SECONDS TO UNLOCK" : "READY TO SPIN");
+  const countdownBar=document.getElementById("countdownBar");
+  if(!spinning){
+    if(countdownValue) countdownValue.textContent=String(left);
+    if(countdownLabel) countdownLabel.textContent=alreadySpun ? "SPIN COMPLETED" : (left>0 ? "SECONDS TO UNLOCK" : "READY TO SPIN");
+  }
+  if(countdownBar && (spinning || alreadySpun)){
+    countdownBar.style.display="none";
+  }
 
   if(spin){
     spin.disabled=!ready;
@@ -454,6 +547,38 @@ function animateWheelTo(targetAngle, duration=5600){
 setWheelRotation(0);
 
 
+
+function showWinnerModal(prizeText, code){
+  const modal=document.getElementById("winnerModal");
+  const prize=document.getElementById("winnerPrize");
+  const coupon=document.getElementById("winnerCoupon");
+  if(prize) prize.textContent=prizeText;
+  if(coupon) coupon.textContent="COUPON #"+code;
+  document.body.classList.add("showing-winner");
+  document.body.style.overflow="hidden";
+  if(modal){
+    modal.classList.add("show");
+    modal.setAttribute("aria-hidden","false");
+  }
+  launchCelebration();
+}
+
+function closeWinnerModal(){
+  const modal=document.getElementById("winnerModal");
+  if(modal){
+    modal.classList.remove("show");
+    modal.setAttribute("aria-hidden","true");
+  }
+  document.body.classList.remove("showing-winner");
+  document.body.style.overflow="";
+}
+
+document.addEventListener("click",function(e){
+  if(e.target && e.target.id==="winnerDone"){
+    closeWinnerModal();
+  }
+});
+
 function launchCelebration(){
   const layer=document.getElementById("confettiLayer");
   const result=document.getElementById("result");
@@ -496,10 +621,15 @@ document.getElementById("spin").addEventListener("click",async function(e){
   spinning=true;
   document.body.classList.add("is-spinning");
   const lock=document.getElementById("lock");
+  const countdownBar=document.getElementById("countdownBar");
   if(lock){
     lock.classList.add("hidden");
     lock.style.display="none";
     lock.setAttribute("aria-hidden","true");
+  }
+  if(countdownBar){
+    countdownBar.style.display="none";
+    countdownBar.setAttribute("aria-hidden","true");
   }
   checkUnlock();
 
@@ -515,17 +645,19 @@ document.getElementById("spin").addEventListener("click",async function(e){
   localStorage.setItem(SPIN_KEY,"1");
 
   const code=String(used).padStart(3,"0");
-  document.getElementById("winText").innerHTML=winner==="glass"
-    ? "<b>FREE TEMPERED GLASS</b>"
-    : "<b>10% DISCOUNT ON MOBILE ACCESSORIES</b>";
-  document.getElementById("coupon").textContent="COUPON #"+code;
+  const prizeText=winner==="glass"
+    ? "FREE TEMPERED GLASS"
+    : "10% DISCOUNT ON MOBILE ACCESSORIES";
+
+  // Keep legacy result values populated, but use the professional body-level popup.
+  const winText=document.getElementById("winText");
+  const coupon=document.getElementById("coupon");
+  if(winText) winText.innerHTML="<b>"+prizeText+"</b>";
+  if(coupon) coupon.textContent="COUPON #"+code;
+
   document.body.classList.remove("is-spinning");
-  document.body.style.overflow="hidden";
-  const result=document.getElementById("result");
-  result.classList.add("show");
-  result.setAttribute("role","dialog");
-  result.setAttribute("aria-modal","true");
-  launchCelebration();
+  showWinnerModal(prizeText,code);
+
   document.getElementById("spin").disabled=true;
   spinning=false;
   checkUnlock();
@@ -542,6 +674,20 @@ document.addEventListener("click",function(e){
 });
 
 </script>
+
+<div id="winnerModal" aria-hidden="true">
+  <div class="winner-card" role="dialog" aria-modal="true" aria-labelledby="winnerTitle">
+    <div class="winner-icon">🎉</div>
+    <div class="winner-kicker">GALAXY POINT • SPIN & WIN</div>
+    <div class="winner-title" id="winnerTitle">CONGRATULATIONS!</div>
+    <div class="winner-prize" id="winnerPrize">YOU WON</div>
+    <div class="winner-coupon-label">YOUR COUPON NUMBER</div>
+    <div class="winner-coupon" id="winnerCoupon">COUPON #001</div>
+    <p class="winner-note">Show this screen at the Galaxy Point counter to claim your reward.</p>
+    <button class="winner-done" id="winnerDone" type="button">DONE</button>
+  </div>
+</div>
+
 <div id="confettiLayer" class="confetti-layer"></div>
 </body>
 </html>
