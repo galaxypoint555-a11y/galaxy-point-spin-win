@@ -4,7 +4,7 @@
 <head>
 <meta charset="utf-8"/>
 <meta content="width=device-width,initial-scale=1,viewport-fit=cover" name="viewport"/>
-<meta name="gp-build" content="V13-GLOBAL-COUPON-CORRECT-PROJECT-20260809"><title>Galaxy Point — Spin Karo Aur Jeeto</title>
+<meta name="gp-build" content="V14-PERSISTENT-COUPON-HISTORY-20260809"><title>Galaxy Point — Spin Karo Aur Jeeto</title>
 <meta content="#030817" name="theme-color"/>
 <style>
 :root{--blue:#1477ff;--gold:#ffc83d;--cyan:#20c7ff;--bg:#020615;--card:#07142d;--muted:#9eb0cf}
@@ -274,6 +274,45 @@ body.showing-winner #lock{
   #winnerModal .winner-coupon{font-size:30px}
 }
 
+
+/* ===== Persistent previous spin card ===== */
+.previous-win{
+  display:none;
+  margin:16px auto 0;
+  max-width:520px;
+  padding:16px;
+  border-radius:18px;
+  text-align:center;
+  background:linear-gradient(180deg,rgba(9,31,61,.96),rgba(5,16,34,.98));
+  border:1px solid rgba(74,159,255,.35);
+  box-shadow:0 14px 36px rgba(0,0,0,.28);
+}
+.previous-win.show{display:block}
+.previous-win .pw-kicker{
+  font-size:10px;
+  letter-spacing:1.2px;
+  color:#8fb9e7;
+  font-weight:900;
+}
+.previous-win .pw-prize{
+  margin:7px 0 8px;
+  font-size:18px;
+  line-height:1.25;
+  font-weight:1000;
+  color:#ffd85b;
+}
+.previous-win .pw-coupon{
+  font-size:24px;
+  font-weight:1000;
+  letter-spacing:1.5px;
+  color:#fff;
+}
+.previous-win .pw-note{
+  margin-top:7px;
+  font-size:11px;
+  color:#9fb1c9;
+}
+
 </style>
 <style>
 img{max-width:100%;}
@@ -377,6 +416,13 @@ img[src^="data:image/"]{visibility:visible!important;opacity:1!important;}
 </div>
 <button type="button" class="spinbtn" disabled="" id="spin">🔒 SPIN NOW</button>
 <div class="note" id="status">Complete all three actions • unlock after 40 seconds</div>
+<div class="previous-win" id="previousWin">
+  <div class="pw-kicker">YOUR PREVIOUS SPIN</div>
+  <div class="pw-prize" id="previousPrize">—</div>
+  <div class="pw-coupon" id="previousCoupon">—</div>
+  <div class="pw-note">✅ Your spin has already been used on this device.</div>
+</div>
+
 <div class="result" id="result">
 <h3>🎉 CONGRATULATIONS!</h3>
 <div id="winText"></div>
@@ -446,6 +492,44 @@ function backendConfigured(){
          !SUPABASE_URL.startsWith("PASTE_") &&
          !SUPABASE_ANON_KEY.startsWith("PASTE_");
 }
+
+
+function showPreviousSpin(record){
+  if(!record) return;
+  const box=document.getElementById("previousWin");
+  const prize=document.getElementById("previousPrize");
+  const coupon=document.getElementById("previousCoupon");
+
+  if(prize) prize.textContent=record.prize || "Reward claimed";
+  if(coupon){
+    const code=record.coupon_code ||
+      (record.coupon_number ? "GP-"+String(record.coupon_number).padStart(3,"0") : "");
+    coupon.textContent=code || "Coupon issued";
+  }
+  if(box) box.classList.add("show");
+}
+
+function restorePreviousSpin(){
+  try{
+    const raw=localStorage.getItem(COUPON_KEY);
+    if(!raw) return;
+    const record=JSON.parse(raw);
+    if(record){
+      showPreviousSpin(record);
+
+      // Keep the Spin button in a clear "already used" state after refresh.
+      const spin=document.getElementById("spin");
+      if(spin){
+        spin.disabled=true;
+        spin.textContent="✓ SPIN ALREADY USED";
+      }
+    }
+  }catch(e){
+    console.warn("Could not restore previous spin:",e);
+  }
+}
+
+document.addEventListener("DOMContentLoaded",restorePreviousSpin);
 
 async function claimGlobalCoupon(prizeText){
   const cached=localStorage.getItem(COUPON_KEY);
@@ -559,7 +643,7 @@ function checkUnlock(){
   }
 
   if(status){
-    if(alreadySpun) status.textContent="Spin completed • one coupon issued";
+    if(alreadySpun) status.textContent="Spin already used • your reward is shown below.";
     else if(spinning) status.textContent="Spinning… please wait";
     else if(!tasksComplete) status.textContent="Complete all three actions to unlock your spin.";
     else if(left>0) status.textContent=`Unlocks in ${left} seconds…`;
@@ -722,6 +806,8 @@ document.getElementById("spin").addEventListener("click",async function(e){
 
     const code=(couponRecord.coupon_code || ("GP-"+String(couponRecord.coupon_number).padStart(3,"0")))
       .replace(/^COUPON\s*#/i,"");
+
+    showPreviousSpin(couponRecord);
 
     // Keep legacy result values populated, but use the professional body-level popup.
     const winText=document.getElementById("winText");
