@@ -2,21 +2,6 @@
 
 <html lang="en">
 <head>
-
-
-<!-- Google tag (gtag.js) - Galaxy Point GA4 DIAGNOSTIC -->
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-  gtag('config', 'G-M287TE5R9G', {
-    send_page_view: true,
-    debug_mode: true
-  });
-</script>
-<script id="ga4-loader" async src="https://www.googletagmanager.com/gtag/js?id=G-M287TE5R9G"></script>
-
-
 <meta charset="utf-8"/>
 <meta content="width=device-width,initial-scale=1,viewport-fit=cover" name="viewport"/>
 <meta name="gp-build" content="V13-PRO-POPUP-20260808"><title>Galaxy Point — Spin Karo Aur Jeeto</title>
@@ -289,16 +274,6 @@ body.showing-winner #lock{
   #winnerModal .winner-coupon{font-size:30px}
 }
 
-
-#gaStatus{
- position:fixed;right:10px;bottom:10px;z-index:2147483646;
- padding:8px 11px;border-radius:999px;font:700 11px/1.2 system-ui,sans-serif;
- background:#2b1d00;color:#ffd76a;border:1px solid #7d5b11;
- box-shadow:0 5px 18px rgba(0,0,0,.28)
-}
-#gaStatus.ok{background:#082b1c;color:#89f0b6;border-color:#1c8b57}
-#gaStatus.bad{background:#351016;color:#ff9aa8;border-color:#a53d4d}
-
 </style>
 <style>
 img{max-width:100%;}
@@ -406,7 +381,7 @@ img[src^="data:image/"]{visibility:visible!important;opacity:1!important;}
 <h3>🎉 CONGRATULATIONS!</h3>
 <div id="winText"></div>
 <div class="coupon" id="coupon"></div>
-<small>Show this coupon at Galaxy Point. One coupon per browser/person.</small><button id="closeResult" type="button" style="margin-top:18px;padding:12px 20px;border:0;border-radius:14px;background:linear-gradient(180deg,#ffe16a,#ffb112);font-weight:900;font-size:16px;cursor:pointer">DONE</button>
+<small>Show this coupon at Galaxy Point. One coupon per device/session. Global coupon number is unique.</small><button id="closeResult" type="button" style="margin-top:18px;padding:12px 20px;border:0;border-radius:14px;background:linear-gradient(180deg,#ffe16a,#ffb112);font-weight:900;font-size:16px;cursor:pointer">DONE</button>
 </div>
 </main>
 <div class="prizes-row">
@@ -443,8 +418,81 @@ const links={
 
 // Campaign-specific key prevents an old test/localStorage value from keeping
 // the new 40-second campaign button permanently locked.
-const SPIN_KEY="gp_spun_campaign_40s_propopup_v7";
-const COUPON_KEY="gp_coupon_counter_v1";
+const SPIN_KEY="gp_spun_global_coupon_v1";
+const COUPON_KEY="gp_coupon_record_global_v1";
+const DEVICE_KEY="gp_device_token_v1";
+
+/* ===== GLOBAL COUPON BACKEND CONFIG =====
+   Paste the two values from Supabase:
+   Project Settings -> API
+*/
+const SUPABASE_URL="PASTE_YOUR_SUPABASE_PROJECT_URL";
+const SUPABASE_ANON_KEY="PASTE_YOUR_SUPABASE_ANON_KEY";
+
+function getDeviceToken(){
+  let token=localStorage.getItem(DEVICE_KEY);
+  if(!token){
+    token=(window.crypto && crypto.randomUUID)
+      ? crypto.randomUUID()
+      : "gp-"+Date.now()+"-"+Math.random().toString(36).slice(2);
+    localStorage.setItem(DEVICE_KEY,token);
+  }
+  return token;
+}
+
+function backendConfigured(){
+  return SUPABASE_URL &&
+         SUPABASE_ANON_KEY &&
+         !SUPABASE_URL.startsWith("PASTE_") &&
+         !SUPABASE_ANON_KEY.startsWith("PASTE_");
+}
+
+async function claimGlobalCoupon(prizeText){
+  const cached=localStorage.getItem(COUPON_KEY);
+  if(cached){
+    try{return JSON.parse(cached);}catch(e){}
+  }
+
+  if(!backendConfigured()){
+    throw new Error("Coupon backend is not configured yet.");
+  }
+
+  const response=await fetch(
+    SUPABASE_URL.replace(/\/$/,"") + "/rest/v1/rpc/claim_coupon",
+    {
+      method:"POST",
+      headers:{
+        "Content-Type":"application/json",
+        "apikey":SUPABASE_ANON_KEY,
+        "Authorization":"Bearer "+SUPABASE_ANON_KEY
+      },
+      body:JSON.stringify({
+        p_device_token:getDeviceToken(),
+        p_prize:prizeText
+      })
+    }
+  );
+
+  if(!response.ok){
+    const text=await response.text();
+    throw new Error("Coupon server error: "+response.status+" "+text);
+  }
+
+  const data=await response.json();
+  const row=Array.isArray(data) ? data[0] : data;
+  if(!row || !row.coupon_code){
+    throw new Error("Coupon server returned no coupon.");
+  }
+
+  const record={
+    coupon_number:row.coupon_number,
+    coupon_code:row.coupon_code,
+    prize:row.prize || prizeText,
+    created_at:row.created_at || new Date().toISOString()
+  };
+  localStorage.setItem(COUPON_KEY,JSON.stringify(record));
+  return record;
+}
 const COUNTDOWN=40;
 let done={ig:false,yt:false,gr:false};
 let spinning=false;
@@ -578,7 +626,7 @@ function showWinnerModal(prizeText, code){
   const prize=document.getElementById("winnerPrize");
   const coupon=document.getElementById("winnerCoupon");
   if(prize) prize.textContent=prizeText;
-  if(coupon) coupon.textContent="COUPON #"+code;
+  if(coupon) coupon.textContent=code;
   document.body.classList.add("showing-winner");
   document.body.style.overflow="hidden";
   if(modal){
@@ -665,27 +713,35 @@ document.getElementById("spin").addEventListener("click",async function(e){
   const turns=5+Math.floor(Math.random()*2);
   await animateWheelTo(turns*360+target,5800);
 
-  const used=Number(localStorage.getItem(COUPON_KEY)||0)+1;
-  localStorage.setItem(COUPON_KEY,String(used));
-  localStorage.setItem(SPIN_KEY,"1");
-
-  const code=String(used).padStart(3,"0");
   const prizeText=winner==="glass"
     ? "FREE TEMPERED GLASS"
     : "10% DISCOUNT ON MOBILE ACCESSORIES";
 
-  // Keep legacy result values populated, but use the professional body-level popup.
-  const winText=document.getElementById("winText");
-  const coupon=document.getElementById("coupon");
-  if(winText) winText.innerHTML="<b>"+prizeText+"</b>";
-  if(coupon) coupon.textContent="COUPON #"+code;
+  try{
+    const couponRecord=await claimGlobalCoupon(prizeText);
+    localStorage.setItem(SPIN_KEY,"1");
 
-  document.body.classList.remove("is-spinning");
-  showWinnerModal(prizeText,code);
+    const code=(couponRecord.coupon_code || ("GP-"+String(couponRecord.coupon_number).padStart(3,"0")))
+      .replace(/^COUPON\s*#/i,"");
 
-  document.getElementById("spin").disabled=true;
-  spinning=false;
-  checkUnlock();
+    // Keep legacy result values populated, but use the professional body-level popup.
+    const winText=document.getElementById("winText");
+    const coupon=document.getElementById("coupon");
+    if(winText) winText.innerHTML="<b>"+prizeText+"</b>";
+    if(coupon) coupon.textContent="COUPON "+code;
+
+    document.body.classList.remove("is-spinning");
+    showWinnerModal(prizeText,code);
+
+    document.getElementById("spin").disabled=true;
+  }catch(err){
+    console.error(err);
+    document.body.classList.remove("is-spinning");
+    alert("Coupon could not be generated. Please contact Galaxy Point staff.\n\n"+err.message);
+  }finally{
+    spinning=false;
+    checkUnlock();
+  }
 });
 
 document.addEventListener("click",function(e){
@@ -707,96 +763,12 @@ document.addEventListener("click",function(e){
     <div class="winner-title" id="winnerTitle">CONGRATULATIONS!</div>
     <div class="winner-prize" id="winnerPrize">YOU WON</div>
     <div class="winner-coupon-label">YOUR COUPON NUMBER</div>
-    <div class="winner-coupon" id="winnerCoupon">COUPON #001</div>
+    <div class="winner-coupon" id="winnerCoupon">GP-001</div>
     <p class="winner-note">Show this screen at the Galaxy Point counter to claim your reward.</p>
     <button class="winner-done" id="winnerDone" type="button">DONE</button>
   </div>
 </div>
 
 <div id="confettiLayer" class="confetti-layer"></div>
-
-<script>
-/* Galaxy Point analytics events — does not change Spin & Win behavior */
-document.addEventListener('DOMContentLoaded', function () {
-  function gpEvent(name, params) {
-    if (typeof window.gtag === 'function') {
-      window.gtag('event', name, params || {});
-    }
-  }
-
-  document.addEventListener('click', function (e) {
-    var task = e.target.closest && e.target.closest('.task-card');
-    if (task && task.id) {
-      var map = {ig:'instagram_click', yt:'youtube_click', gr:'google_review_click'};
-      if (map[task.id]) gpEvent(map[task.id]);
-    }
-
-    var spin = e.target.closest && e.target.closest('#spin');
-    if (spin && !spin.disabled) gpEvent('spin_click');
-  }, true);
-
-  var winnerModal = document.getElementById('winnerModal');
-  if (winnerModal && window.MutationObserver) {
-    new MutationObserver(function () {
-      if (winnerModal.classList.contains('show')) {
-        var prize = document.getElementById('winnerPrize');
-        var coupon = document.getElementById('winnerCoupon');
-        gpEvent('spin_result', {
-          prize: prize ? prize.textContent.trim() : '',
-          coupon: coupon ? coupon.textContent.trim() : ''
-        });
-      }
-    }).observe(winnerModal, {attributes:true, attributeFilter:['class']});
-  }
-});
-</script>
-
-<div id="gaStatus">GA: checking…</div>
-
-<script>
-(function(){
-  function setStatus(text, cls){
-    var el=document.getElementById('gaStatus');
-    if(!el) return;
-    el.textContent=text;
-    el.className=cls||'';
-  }
-
-  var loader=document.getElementById('ga4-loader');
-  if(loader){
-    loader.addEventListener('load', function(){
-      setStatus('GA LOADED ✓','ok');
-      try{
-        gtag('event','gp_test_ping',{
-          debug_mode:true,
-          event_category:'diagnostic',
-          page_location:location.href,
-          page_title:document.title
-        });
-      }catch(e){}
-    });
-    loader.addEventListener('error', function(){
-      setStatus('GA BLOCKED ✕','bad');
-    });
-  }
-
-  setTimeout(function(){
-    if(window.google_tag_manager){
-      setStatus('GA LOADED ✓','ok');
-      try{
-        gtag('event','gp_test_ping',{
-          debug_mode:true,
-          event_category:'diagnostic',
-          page_location:location.href,
-          page_title:document.title
-        });
-      }catch(e){}
-    } else {
-      setStatus('GA NOT LOADED','bad');
-    }
-  }, 5000);
-})();
-</script>
-
 </body>
 </html>
