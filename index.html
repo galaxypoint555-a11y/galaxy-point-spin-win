@@ -4,7 +4,7 @@
 <head>
 <meta charset="utf-8"/>
 <meta content="width=device-width,initial-scale=1,viewport-fit=cover" name="viewport"/>
-<meta name="gp-build" content="V13-PRO-POPUP-20260808"><title>Galaxy Point — Spin Karo Aur Jeeto</title>
+<meta name="gp-build" content="V13-GLOBAL-COUPON-SUPABASE-CONNECTED-20260809"><title>Galaxy Point — Spin Karo Aur Jeeto</title>
 <meta content="#030817" name="theme-color"/>
 <style>
 :root{--blue:#1477ff;--gold:#ffc83d;--cyan:#20c7ff;--bg:#020615;--card:#07142d;--muted:#9eb0cf}
@@ -426,8 +426,8 @@ const DEVICE_KEY="gp_device_token_v1";
    Paste the two values from Supabase:
    Project Settings -> API
 */
-const SUPABASE_URL="PASTE_YOUR_SUPABASE_PROJECT_URL";
-const SUPABASE_ANON_KEY="PASTE_YOUR_SUPABASE_ANON_KEY";
+const SUPABASE_URL="https://bwhtusnyqbbtdzdvqxrkk.supabase.co";
+const SUPABASE_ANON_KEY="sb_publishable_1XglaiHi2T8Y1VKFLPT83g_dQlSPnXS";
 
 function getDeviceToken(){
   let token=localStorage.getItem(DEVICE_KEY);
@@ -463,8 +463,7 @@ async function claimGlobalCoupon(prizeText){
       method:"POST",
       headers:{
         "Content-Type":"application/json",
-        "apikey":SUPABASE_ANON_KEY,
-        "Authorization":"Bearer "+SUPABASE_ANON_KEY
+        "apikey":SUPABASE_ANON_KEY
       },
       body:JSON.stringify({
         p_device_token:getDeviceToken(),
