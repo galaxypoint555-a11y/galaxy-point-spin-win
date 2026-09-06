@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width,initial-scale=1,viewport-fit=cover" name="viewport"/>
+<title>Galaxy Point — Admin Dashboard V4</title>
+<style>
+:root{
+  --bg:#03080f;--sidebar:#040a12;--panel:#07121e;--panel2:#0a1724;
+  --line:#183149;--blue:#1678ff;--cyan:#29d8ff;--gold:#ffc928;
+  --green:#39d67d;--red:#ef4747;--purple:#9d4edd;--text:#f8fbff;--muted:#93a8bb;
+}
+*{box-sizing:border-box}
+html,body{margin:0;min-height:100%;background:var(--bg);color:var(--text);font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif}
+body{background:
+ radial-gradient(circle at 72% -10%,rgba(15,119,255,.12),transparent 35%),
+ linear-gradient(180deg,#03080f,#02060b 75%)}
+button,input,select{font:inherit}
+.app{display:grid;grid-template-columns:260px 1fr;min-height:100vh}
+.sidebar{
+  position:sticky;top:0;height:100vh;padding:20px 16px;border-right:1px solid #152536;
+  background:linear-gradient(180deg,#050b13,#03070c);display:flex;flex-direction:column
+}
+.logo{display:flex;align-items:center;gap:12px;padding:0 4px 20px}
+.logo-mark{
+  width:58px;height:42px;border-radius:14px;display:grid;place-items:center;
+  font-size:20px;font-weight:1000;font-style:italic;
+  background:linear-gradient(145deg,#fff 0 14%,#1680ff 15% 48%,#07111c 49% 100%);
+  border:1px solid #718ba5;box-shadow:0 8px 25px rgba(0,0,0,.35)
+}
+.logo-copy strong{display:block;font-size:18px;line-height:1.05} .logo-copy strong span{color:#2388ff}
+.logo-copy small{color:#dfe8f0;font-size:11px}
+.side-title{margin:12px 5px 8px;font-size:15px;font-weight:1000}
+.vbadge{display:inline-block;margin-left:6px;padding:3px 7px;border-radius:7px;border:1px solid #277ee9;color:#7eb9ff;background:#0b2544;font-size:9px}
+.side-sub{margin:0 5px 15px;color:#8fa0b0;font-size:11px;line-height:1.45}
+.nav{display:grid;gap:6px}
+.nav button{
+  height:43px;border:0;border-radius:8px;text-align:left;padding:0 12px;color:#d4dde6;background:transparent;cursor:pointer
+}
+.nav button.active{background:linear-gradient(90deg,#1678ff,#0d64dd);color:#fff;font-weight:900;box-shadow:0 8px 22px rgba(22,120,255,.22)}
+.nav button:hover:not(.active){background:#091522}
+.side-box{margin-top:16px;padding:14px;border-radius:12px;border:1px solid #1d4a73;background:linear-gradient(180deg,#071521,#040c14)}
+.side-box.purple{border-color:#6b3ca2}
+.side-box h4{margin:0 0 12px;color:#5aa4ff;font-size:12px;letter-spacing:.6px}
+.health{display:flex;align-items:center;gap:8px;color:#47e287;font-weight:900;font-size:12px}
+.health-dot{width:9px;height:9px;border-radius:50%;background:#43df7a;box-shadow:0 0 12px #43df7a}
+.side-box p{margin:9px 0 0;color:#b5c3d0;font-size:10px;line-height:1.5}
+.quick-row{display:flex;justify-content:space-between;padding:9px 0;border-bottom:1px solid #142738;font-size:10px;color:#bdc9d4}
+.quick-row:last-child{border-bottom:0} .quick-row b{font-size:13px;color:#fff}
+.content{min-width:0;padding:16px 18px 30px}
+.topbar{display:flex;justify-content:space-between;align-items:center;gap:14px;margin-bottom:14px}
+.top-left{display:flex;align-items:center;gap:12px}
+.menu{font-size:24px;color:#9fb1c1}
+.refresh-pill{
+  display:flex;align-items:center;gap:8px;padding:10px 14px;border:2px solid #e0c000;border-radius:11px;
+  background:#09111a;color:#dbe4ec;font-size:12px
+}
+.refresh-pill b{color:#4be683}
+.top-right{display:flex;align-items:center;gap:12px;color:#c4d0db;font-size:12px}
+.logout{border:1px solid #78353b;background:#261014;color:#ff7c86;padding:9px 13px;border-radius:8px;cursor:pointer}
+.metrics{display:grid;grid-template-columns:repeat(5,1fr);gap:12px;margin-bottom:14px}
+.metric{position:relative;overflow:hidden;border-radius:11px;padding:16px;border:1px solid #1c3c5b;background:linear-gradient(145deg,#0a2035,#07131f)}
+.metric.green{background:linear-gradient(145deg,#0a2d21,#061912);border-color:#1d5b43}
+.metric.gold{background:linear-gradient(145deg,#352c08,#171306);border-color:#6a5510}
+.metric.purple{background:linear-gradient(145deg,#29173c,#130b1e);border-color:#58317c}
+.metric.cyan{background:linear-gradient(145deg,#0b3340,#061a20);border-color:#1c6576}
+.metric .icon{font-size:26px;margin-bottom:6px}
+.metric small{display:block;color:#76b6f6;font-size:9px;font-weight:900;letter-spacing:.4px}
+.metric strong{display:block;margin-top:5px;font-size:28px;line-height:1}
+.metric p{margin:7px 0 0;color:#8ea3b6;font-size:9px}
+.filters{display:grid;grid-template-columns:1fr 1fr 1fr .9fr auto;gap:10px;padding:14px;border-radius:11px;border:1px solid #1b344c;background:linear-gradient(180deg,#091722,#07121c);margin-bottom:14px}
+.field label{display:block;margin-bottom:6px;color:#aebdca;font-size:9px}
+.field input,.field select{width:100%;height:40px;border:1px solid #2a4055;border-radius:7px;background:#08131f;color:#fff;padding:0 11px;outline:none}
+.field input:focus,.field select:focus{border-color:#1678ff;box-shadow:0 0 0 3px rgba(22,120,255,.1)}
+.clear-btn{align-self:end;height:40px;border-radius:7px;border:1px solid #36495c;background:#0b1722;color:#bdc8d2;padding:0 14px;cursor:pointer}
+.table-card{border:1px solid #19334c;border-radius:11px;background:linear-gradient(180deg,#07121d,#050c14);overflow:hidden}
+.table-title{display:flex;justify-content:space-between;align-items:center;padding:13px 15px;border-bottom:1px solid #1c344b}
+.table-title strong{font-size:14px} .table-title span{color:#9eb0c0;font-size:10px}
+.table-wrap{overflow:auto;max-height:61vh}
+table{width:100%;border-collapse:collapse;min-width:1180px}
+th,td{padding:11px 10px;border-bottom:1px solid #142638;text-align:left;font-size:10px}
+th{position:sticky;top:0;z-index:3;background:#0a1724;color:#9dafbf;font-size:9px;letter-spacing:.6px}
+tbody tr:hover{background:rgba(26,115,220,.045)}
+.coupon{font-weight:900;color:#e8f2fb} .prize{font-weight:900;color:#ffd052}
+.status{display:inline-block;padding:6px 9px;border-radius:7px;font-size:8px;font-weight:1000;text-transform:uppercase}
+.status.pending{background:#6f4b09;color:#ffd56a} .status.claimed{background:#0e4d95;color:#8ec5ff}
+.status.verified{background:#145f31;color:#9bf1b9} .status.disqualified{background:#8a1f23;color:#ffb0b4}
+.status.expired{background:#3b4855;color:#d9e1e8}
+.claimed-time{display:block;margin-top:4px;color:#73889a;font-size:8px}
+.actions{display:flex;gap:5px;flex-wrap:nowrap}
+.actions button{height:31px;padding:0 8px;border:0;border-radius:6px;color:#fff;font-size:8px;font-weight:1000;cursor:pointer}
+.b-claim{background:#0967d4} .b-verify{background:#228843} .b-disq{background:#c93333} .b-expire{background:#7a37a7}
+.pager{display:flex;justify-content:space-between;align-items:center;padding:12px 14px;border-top:1px solid #172c40;color:#a5b5c4;font-size:10px}
+.pager .buttons{display:flex;gap:7px;align-items:center}
+.pager button{height:35px;padding:0 13px;border:1px solid #253d53;border-radius:6px;background:#08131e;color:#dbe5ee;cursor:pointer}
+.pager button:disabled{opacity:.35;cursor:not-allowed} .pagebox{padding:8px 11px;border-radius:6px;background:#126fe8;color:#fff;font-weight:900}
+.secure{
+  max-width:930px;margin:18px auto 0;padding:12px 17px;border-radius:11px;border:1px solid #8b347e;
+  background:linear-gradient(90deg,#0b1320,#070b12);display:flex;justify-content:center;gap:20px;align-items:center;
+  color:#cdd7df;font-size:10px
+}
+.secure strong{color:#4be379;font-size:15px}
+.login{position:fixed;inset:0;z-index:50;display:flex;align-items:center;justify-content:center;padding:20px;background:rgba(0,5,10,.92);backdrop-filter:blur(14px)}
+.login.hidden{display:none} .login-card{width:min(92vw,420px);padding:24px;border-radius:18px;background:#07131f;border:1px solid #1f5d9d;text-align:center;box-shadow:0 25px 80px rgba(0,0,0,.6)}
+.login-card h2{margin:0 0 8px} .login-card p{margin:0 0 14px;color:#93a8bb;font-size:11px}
+.login-card input{width:100%;height:43px;border:1px solid #2a4964;border-radius:8px;background:#040d15;color:#fff;padding:0 12px}
+.login-card button{width:100%;height:43px;margin-top:10px;border:0;border-radius:8px;background:linear-gradient(180deg,#ffe26e,#ffba1c);font-weight:1000;cursor:pointer}
+.err{min-height:16px;margin-top:8px;color:#ff9d9d;font-size:10px}
+@media(max-width:1150px){.app{grid-template-columns:210px 1fr}.metrics{grid-template-columns:repeat(3,1fr)}.filters{grid-template-columns:1fr 1fr}.clear-btn{align-self:stretch}}
+@media(max-width:760px){.app{display:block}.sidebar{position:relative;height:auto}.nav,.side-box{display:none}.content{padding:10px}.metrics{grid-template-columns:1fr 1fr}.topbar{align-items:flex-start;flex-direction:column}.filters{grid-template-columns:1fr}}
+</style>
+<style>
+.customer-data-note{
+  margin-left:auto;
+  color:#43df7a!important;
+  font-size:9px!important;
+  font-weight:800;
+}
+@media(max-width:760px){
+  .customer-data-note{display:none}
+}
+</style></head>
+<body>
+<div class="login" id="login">
+<div class="login-card">
+<h2>Galaxy Point Admin</h2>
+<p>Enter your private dashboard access key.</p>
+<input autocomplete="current-password" id="adminKey" placeholder="Admin access key" type="password"/>
+<button id="loginBtn">OPEN DASHBOARD</button>
+<div class="err" id="loginError"></div>
+</div>
+</div>
+<div class="app">
+<aside class="sidebar">
+<div class="logo">
+<div class="logo-mark">GP</div>
+<div class="logo-copy"><strong>GALAXY <span>POINT</span></strong><small>SPIN &amp; WIN</small></div>
+</div>
+<div class="side-title">ADMIN DASHBOARD <span class="vbadge">V4</span></div>
+<p class="side-sub">Manage Spin &amp; Win participants, coupons and claims.</p>
+<div class="nav">
+<button class="active">▦   Dashboard</button>
+<button onclick="document.getElementById('tableSection').scrollIntoView({behavior:'smooth'})">👥   All Customers</button>
+<button onclick="alert('Analytics summary is shown on the dashboard cards.')">▥   Analytics</button>
+<button id="exportBtn">⇩   Export Current Page</button>
+<button onclick="alert('Settings are managed in Supabase for security.')">⚙   Settings</button>
+<button onclick="alert('Campaign: Galaxy Point Spin &amp; Win')">🎁   Campaign Info</button>
+</div>
+<div class="side-box purple">
+<h4>CAMPAIGN STATUS</h4>
+<div class="health"><span class="health-dot"></span> ACTIVE</div>
+<p>Spin &amp; Win campaign<br/>All systems operational</p>
+</div>
+<div class="side-box">
+<h4>QUICK STATS</h4>
+<div class="quick-row"><span>Total Coupons</span><b id="sideCoupons">0</b></div>
+<div class="quick-row"><span>Pending</span><b id="sidePending">0</b></div>
+<div class="quick-row"><span>Claimed</span><b id="sideClaimed">0</b></div>
+<div class="quick-row"><span>Verified</span><b id="sideVerified">0</b></div>
+</div>
+</aside>
+<main class="content">
+<div class="topbar">
+<div class="top-left">
+<span class="menu">☰</span>
+<div class="refresh-pill">↻   Auto Refresh in: <b>15 sec</b></div>
+</div>
+<div class="top-right">
+<span>👥 Total Customers: <b id="topCustomers">0</b></span>
+<button class="logout" id="logoutBtn">↪ Logout</button>
+</div>
+</div>
+<section class="metrics">
+<div class="metric"><div class="icon">👥</div><small>TOTAL CUSTOMERS</small><strong id="totalCustomers">0</strong><p>All Time</p></div>
+<div class="metric green"><div class="icon">⟳</div><small>TOTAL COUPONS</small><strong id="totalCoupons">0</strong><p>All Time</p></div>
+<div class="metric gold"><div class="icon">🏆</div><small>CLAIMED</small><strong id="totalClaimed">0</strong><p>Reward Used</p></div>
+<div class="metric purple"><div class="icon">👤</div><small>PENDING CLAIMS</small><strong id="totalPending">0</strong><p>Action Required</p></div>
+<div class="metric cyan"><div class="icon">✓</div><small>VERIFIED</small><strong id="totalVerified">0</strong><p>Verified &amp; Completed</p></div>
+</section>
+<section class="filters">
+<div class="field"><label>Search by Name</label><input id="searchName" placeholder="Enter customer name..."/></div>
+<div class="field"><label>Search by Mobile</label><input id="searchMobile" placeholder="Enter mobile number..."/></div>
+<div class="field"><label>Search by Coupon</label><input id="searchCoupon" placeholder="Enter coupon number..."/></div>
+<div class="field"><label>Filter by Status</label>
+<select id="statusFilter"><option value="">All Status</option><option value="pending">Pending</option><option value="claimed">Claimed</option><option value="verified">Verified</option><option value="disqualified">Disqualified</option><option value="expired">Expired</option></select>
+</div>
+<button class="clear-btn" id="clearFilters">×   Clear Filters</button>
+</section>
+<section class="table-card" id="tableSection">
+<div class="table-title">
+<strong>👥 ALL CUSTOMERS <span style="font-weight:400;color:#95a8ba">(PAGINATED)</span></strong>
+<span id="rangeText">Showing latest records</span>
+<span class="customer-data-note">Name + Mobile shown from Supabase records</span></div>
+<div class="table-wrap">
+<table>
+<thead><tr><th>#</th><th>COUPON CODE</th><th>NAME</th><th>MOBILE</th><th>PRIZE</th><th>STATUS</th><th>SPIN DATE</th><th>CLAIMED AT</th><th>ACTIONS</th></tr></thead>
+<tbody id="rows"></tbody>
+</table>
+<div id="empty" style="display:none;padding:32px;text-align:center;color:#7f94a7">No matching customers found.</div>
+</div>
+<div class="pager">
+<div><span id="pageSizeLabel">100 entries per page</span></div>
+<div class="buttons"><button id="prevBtn">« Previous</button><span class="pagebox" id="pageNumber">1</span><button id="nextBtn">Next »</button></div>
+<div id="pageInfo">Page 1</div>
+</div>
+</section>
+<div class="secure"><strong>🛡 SECURE ADMIN PANEL</strong><span>One Coupon Per Person • Live Data • Paginated • Auto Refresh Every 15 Seconds</span><span style="color:#43df7a;font-size:18px">↻</span></div>
+</main>
+</div>
+<script>
+const SUPABASE_URL='https://bwhtusnyqbbtdzdyqxrk.supabase.co';
+const SUPABASE_ANON_KEY='sb_publishable_1XglaiHi2T8Y1VKFLPT83g_dQlSPnXS';
+const REFRESH_MS=15000;
+const PAGE_SIZE=100;
+let adminKey=localStorage.getItem("gp_admin_dashboard_key")||"";
+let page=0,totalRows=0,timer=null,currentRows=[];
+
+function fmtDate(v){if(!v)return "—";try{return new Date(v).toLocaleString("en-IN",{dateStyle:"medium",timeStyle:"short"})}catch(e){return v}}
+function esc(v){return String(v??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[c]));}
+async function rpc(name,body){
+  const res=await fetch(SUPABASE_URL.replace(/\/$/,"")+"/rest/v1/rpc/"+name,{
+    method:"POST",headers:{"Content-Type":"application/json","apikey":SUPABASE_ANON_KEY},body:JSON.stringify(body)
+  });
+  if(!res.ok){const t=await res.text();if(/invalid admin access key/i.test(t))throw new Error("Invalid admin access key.");throw new Error("Dashboard error: "+res.status+" "+t)}
+  return await res.json();
+}
+function activeSearch(){
+  return (document.getElementById("searchName").value||document.getElementById("searchMobile").value||document.getElementById("searchCoupon").value||"").trim();
+}
+async function fetchSummary(){
+  const d=await rpc("admin_coupon_summary_v4",{p_admin_key:adminKey});
+  const s=Array.isArray(d)?d[0]:d;
+  const customers=s.total_customers??s.total_coupons??0;
+  document.getElementById("totalCustomers").textContent=customers;
+  document.getElementById("topCustomers").textContent=customers;
+  document.getElementById("totalCoupons").textContent=s.total_coupons??0;
+  document.getElementById("totalClaimed").textContent=s.claimed??0;
+  document.getElementById("totalPending").textContent=s.pending??0;
+  document.getElementById("totalVerified").textContent=s.verified??0;
+  document.getElementById("sideCoupons").textContent=s.total_coupons??0;
+  document.getElementById("sidePending").textContent=s.pending??0;
+  document.getElementById("sideClaimed").textContent=s.claimed??0;
+  document.getElementById("sideVerified").textContent=s.verified??0;
+}
+async function fetchPage(reset=false){
+  if(reset)page=0;
+  const d=await rpc("admin_coupon_page_v4",{
+    p_admin_key:adminKey,p_limit:PAGE_SIZE,p_offset:page*PAGE_SIZE,
+    p_search:activeSearch(),p_status:document.getElementById("statusFilter").value
+  });
+  const payload=Array.isArray(d)?d[0]:d;
+  totalRows=payload.total??0;currentRows=payload.customers||[];
+  renderRows(currentRows);
+  document.getElementById("pageNumber").textContent=page+1;
+  document.getElementById("pageInfo").textContent=`Page ${page+1} of ${Math.max(1,Math.ceil(totalRows/PAGE_SIZE))}`;
+  const from=totalRows? page*PAGE_SIZE+1:0, to=Math.min((page+1)*PAGE_SIZE,totalRows);
+  document.getElementById("rangeText").textContent=`Showing ${from} to ${to} of ${totalRows} entries`;
+  document.getElementById("prevBtn").disabled=page===0;
+  document.getElementById("nextBtn").disabled=(page+1)*PAGE_SIZE>=totalRows;
+}
+function renderRows(list){
+  const tbody=document.getElementById("rows");
+  tbody.innerHTML=list.map((r,i)=>{
+    const st=(r.eligibility_status||"pending").toLowerCase();
+    return `<tr>
+      <td>${page*PAGE_SIZE+i+1}</td>
+      <td class="coupon">${esc(r.coupon_code || ("GP-"+String(r.id).padStart(5,"0")))}</td>
+      <td>${esc(r.customer_name || r.name || "—")}</td>
+      <td>${esc(r.mobile_number || r.mobile || "—")}</td>
+      <td class="prize">${esc(r.prize||"—")}</td>
+      <td><span class="status ${st}">${esc(st)}</span></td>
+      <td>${esc(fmtDate(r.created_at))}</td>
+      <td>${esc(fmtDate(r.claimed_at))}</td>
+      <td><div class="actions">
+        <button class="b-claim" onclick="updateStatus(${r.id},'claimed')">✓ CLAIMED</button>
+        <button class="b-verify" onclick="updateStatus(${r.id},'verified')">◈ VERIFY</button>
+        <button class="b-disq" onclick="updateStatus(${r.id},'disqualified')">× DISQUALIFY</button>
+        <button class="b-expire" onclick="updateStatus(${r.id},'expired')">⌛ EXPIRE</button>
+      </div></td>
+    </tr>`;
+  }).join("");
+  document.getElementById("empty").style.display=list.length?"none":"block";
+}
+async function updateStatus(id,status){
+  const labels={claimed:"mark this coupon as CLAIMED",verified:"mark this customer as VERIFIED",disqualified:"DISQUALIFY this customer",expired:"mark this coupon as EXPIRED"};
+  if(!confirm("Are you sure you want to "+(labels[status]||status)+"?"))return;
+  await rpc("admin_update_coupon_status",{p_admin_key:adminKey,p_coupon_id:id,p_status:status});
+  await refreshAll(false);
+}
+async function refreshAll(reset=false){await Promise.all([fetchSummary(),fetchPage(reset)])}
+async function start(){
+  try{await refreshAll(true);document.getElementById("login").classList.add("hidden");localStorage.setItem("gp_admin_dashboard_key",adminKey);clearInterval(timer);timer=setInterval(()=>refreshAll(false).catch(()=>{}),REFRESH_MS)}
+  catch(e){document.getElementById("loginError").textContent=e.message}
+}
+function triggerSearch(){fetchPage(true).catch(e=>alert(e.message))}
+["searchName","searchMobile","searchCoupon"].forEach(id=>document.getElementById(id).addEventListener("keydown",e=>{if(e.key==="Enter")triggerSearch()}));
+document.getElementById("statusFilter").addEventListener("change",triggerSearch);
+document.getElementById("clearFilters").onclick=()=>{["searchName","searchMobile","searchCoupon"].forEach(id=>document.getElementById(id).value="");document.getElementById("statusFilter").value="";triggerSearch()};
+document.getElementById("prevBtn").onclick=()=>{if(page>0){page--;fetchPage()}};
+document.getElementById("nextBtn").onclick=()=>{if((page+1)*PAGE_SIZE<totalRows){page++;fetchPage()}};
+document.getElementById("loginBtn").onclick=()=>{
+  adminKey=document.getElementById("adminKey").value.trim();
+  document.getElementById("loginError").textContent="Checking access…";
+  start();
+};
+document.getElementById("adminKey").addEventListener("keydown",e=>{if(e.key==="Enter")document.getElementById("loginBtn").click()});
+document.getElementById("logoutBtn").onclick=()=>{localStorage.removeItem("gp_admin_dashboard_key");location.reload()};
+document.getElementById("exportBtn").onclick=()=>{
+  if(!currentRows.length)return alert("No rows to export.");
+  const cols=["id","coupon_code","customer_name","mobile_number","prize","eligibility_status","created_at","claimed_at"];
+  const csv=[cols.join(","),...currentRows.map(r=>cols.map(c=>`"${String(r[c]??"").replace(/"/g,'""')}"`).join(","))].join("\n");
+  const a=document.createElement("a");a.href=URL.createObjectURL(new Blob([csv],{type:"text/csv"}));a.download="galaxy-point-customers-page.csv";a.click();URL.revokeObjectURL(a.href);
+};
+if(adminKey){document.getElementById("adminKey").value=adminKey;start()}
+</script>
+</body>
+</html>
