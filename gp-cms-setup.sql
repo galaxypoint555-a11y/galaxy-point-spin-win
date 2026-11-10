@@ -52,8 +52,12 @@ drop policy if exists gp_site_admin_update on public.gp_site_content;
 create policy gp_site_admin_update on public.gp_site_content for update to authenticated
   using ((select public.gp_is_editor())) with check ((select public.gp_is_editor()));
 drop policy if exists gp_products_read on public.gp_products;
-create policy gp_products_read on public.gp_products for select to anon, authenticated
-  using (is_published or (select public.gp_is_editor()));
+drop policy if exists gp_products_read_public on public.gp_products;
+create policy gp_products_read_public on public.gp_products for select to anon, authenticated
+  using (is_published);
+drop policy if exists gp_products_read_editor on public.gp_products;
+create policy gp_products_read_editor on public.gp_products for select to authenticated
+  using ((select public.gp_is_editor()));
 drop policy if exists gp_products_insert on public.gp_products;
 create policy gp_products_insert on public.gp_products for insert to authenticated with check ((select public.gp_is_editor()));
 drop policy if exists gp_products_update on public.gp_products;
